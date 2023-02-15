@@ -1,0 +1,38 @@
+@use './variables' as *;
+
+.user-message {
+  @include grid(
+    $row: repeat(2, auto),
+    $column: repeat(2, auto) 1fr,
+    $gap: $spacer * 0.5 $spacer
+  ) {
+    grid-template-areas: 'img name date' 'img message message';
+
+    @media (max-width: 375px) {
+      grid-template-rows: repeat(3, auto);
+      grid-template-columns: repeat(2, auto);
+      grid-template-areas: 'img name' 'img date' 'img message';
+    }
+  }
+  margin-bottom: $spacer;
+  align-items: start;
+
+  img {
+    grid-area: img;
+    width: 20px;
+  }
+  .name {
+    grid-area: name;
+    text-transform: capitalize;
+    color: $font-gray-200;
+    font-weight: 700;
+  }
+  .date {
+    grid-area: date;
+    color: $font-gray-200;
+    font-size: 0.95rem;
+  }
+  .message {
+    grid-area: message;
+  }
+}

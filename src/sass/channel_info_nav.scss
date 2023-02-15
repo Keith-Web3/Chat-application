@@ -1,0 +1,67 @@
+@use './variables' as *;
+
+.channel-info-nav {
+  background-color: $dark-200;
+  color: $font-gray-100;
+  z-index: 3;
+  position: fixed;
+  padding-top: calc(52px + $spacer);
+  width: 90%;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 250ms linear;
+
+  &.active {
+    transform: translateX(0);
+  }
+
+  .header {
+    display: flex;
+    gap: $spacer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: $spacer;
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 100%;
+    isolation: isolate;
+    background-color: $dark-200;
+
+    img {
+      width: 0.9rem;
+      cursor: pointer;
+    }
+    p {
+      text-transform: uppercase;
+    }
+  }
+
+  .container {
+    padding: $spacer;
+
+    .name,
+    .desc {
+      margin-inline: auto;
+    }
+    .name {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 1.15rem;
+      margin-bottom: $spacer * 0.8;
+    }
+    .desc {
+      line-height: 1.75;
+    }
+  }
+  .members {
+    margin-top: $spacer * 2;
+
+    p:first-child {
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: $spacer;
+    }
+  }
+}

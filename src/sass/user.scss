@@ -1,0 +1,17 @@
+@use './variables' as *;
+
+.user {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacer;
+
+  img {
+    width: 30px;
+  }
+  p {
+    color: $font-gray-200;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,0 +1,27 @@
+$spacer: 1em;
+$blue: #2f80ed;
+$red: #eb5757;
+$font-gray-100: #e0e0e0;
+$font-gray-200: #828282;
+$input-gray: #3c393f;
+$dark-100: #252329;
+$dark-200: #120f13;
+$dark-300: #0b090c;
+
+@mixin grid($row, $column, $gap: $spacer) {
+  display: grid;
+  grid-template: $row / $column;
+  gap: $gap;
+  @content;
+}
+
+@mixin pseudo($content: '', $inset) {
+  position: relative;
+
+  &::after {
+    content: $content;
+    position: absolute;
+    inset: $inset;
+    @content;
+  }
+}
