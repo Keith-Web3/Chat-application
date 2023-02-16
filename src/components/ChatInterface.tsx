@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 
 import '../sass/chat_interface.scss'
-import DUMMY_DATA from './data/dummy'
+import DUMMY_DATA from './Data/dummy'
 import UserMessage from './UserMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
@@ -17,16 +17,16 @@ interface ChatInterfaceProps {
 }
 
 const handleNavToggle = function () {
-  const nav = document.querySelector('.channel-info-nav')! as HTMLDivElement
+  const nav = document.querySelector('.nav')! as HTMLDivElement
   console.log('toggled')
   nav.classList.toggle('active')
 }
 
 const generalNavClose = function (e: MouseEvent<HTMLElement>) {
   if (
-    !(e.target as HTMLElement)!.closest('.channel-info-nav') &&
+    !(e.target as HTMLElement)!.closest('.nav') &&
     !(e.target as HTMLElement).matches('.menu') &&
-    document.querySelector('.channel-info-nav')?.classList.contains('active')
+    document.querySelector('.nav')?.classList.contains('active')
   ) {
     handleNavToggle()
   }

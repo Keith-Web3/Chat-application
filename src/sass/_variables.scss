@@ -25,3 +25,9 @@ $dark-300: #0b090c;
     @content;
   }
 }
+
+@mixin medium() {
+  @media (min-width: 700px) {
+    @content;
+  }
+}

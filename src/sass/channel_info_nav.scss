@@ -6,7 +6,7 @@
   z-index: 3;
   position: fixed;
   padding-top: calc(52px + $spacer);
-  width: 90%;
+  width: min(90%, 370px);
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -15,6 +15,13 @@
 
   &.active {
     transform: translateX(0);
+  }
+
+  @include medium {
+    position: sticky;
+    inset: 0 auto auto 0;
+    transform: translate(0);
+    width: auto;
   }
 
   .header {
@@ -34,6 +41,19 @@
     }
     p {
       text-transform: uppercase;
+    }
+    .img-container {
+      position: absolute;
+      inset: 50% auto auto 100%;
+      z-index: 10;
+      transform: translate($spacer, -50%);
+      width: 42px;
+      aspect-ratio: 1 / 1;
+
+      img {
+        width: 90%;
+        aspect-ratio: inherit;
+      }
     }
   }
 

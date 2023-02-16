@@ -1,8 +1,9 @@
 import { useReducer } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 
 import UserMessage from './components/UserMessage'
-import userImg from './assets/user-solid.svg'
+import userImg from './assets/MyProfile.jpg'
 import ChannelInfoNav from './components/ChannelInfoNav'
 import ChatInterface from './components/ChatInterface'
 import AllChannels from './components/AllChannels'
@@ -40,6 +41,7 @@ const App: React.FC = function () {
     channelReducerFn,
     initialReducerArg
   )
+  const location = useLocation()
   return (
     <Routes>
       <Route path="/" element={<ChatInterface channelInfo={channelInfo} />}>

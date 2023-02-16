@@ -1,0 +1,22 @@
+@use './variables' as *;
+
+.channel {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacer * 1.5;
+  gap: $spacer;
+  cursor: pointer;
+
+  .logo {
+    background: #252329;
+    border-radius: 8px;
+    width: 42px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-content: center;
+  }
+  .name {
+    width: 100%;
+    text-transform: uppercase;
+  }
+}

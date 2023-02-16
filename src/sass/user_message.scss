@@ -14,12 +14,13 @@
       grid-template-areas: 'img name' 'img date' 'img message';
     }
   }
-  margin-bottom: $spacer;
+  margin-bottom: $spacer * 2;
   align-items: start;
 
   img {
     grid-area: img;
-    width: 20px;
+    width: 45px;
+    border-radius: 7px;
   }
   .name {
     grid-area: name;

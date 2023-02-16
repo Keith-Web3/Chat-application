@@ -1,10 +1,12 @@
-import React, { MouseEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import React from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { nanoid } from 'nanoid'
+import { motion } from 'framer-motion'
 
 import backBtn from '../assets/chevron-left-solid.svg'
 import User from './User'
 import '../sass/channel_info_nav.scss'
+import cancelBtn from '../assets/xmark-solid.svg'
 
 interface NavBarProps {
   channelInfo: {
@@ -15,25 +17,28 @@ interface NavBarProps {
 }
 
 const handleNavToggle = function () {
-  const nav = document.querySelector('.channel-info-nav')! as HTMLDivElement
+  const nav = document.querySelector('.nav')! as HTMLDivElement
 
   nav.classList.toggle('active')
 }
-// const generalNavClose = function (e: MouseEvent<HTMLBodyElement>) {
-//   if (!(e.target as HTMLElement)!.closest('.channel-info-nav'))
-//     handleNavToggle()
-// }
-// document.body.addEventListener('click', generalNavClose)
 
 const ChannelInfoNav: React.FC<NavBarProps> = function ({ channelInfo }) {
   const params = useParams()
+  const navigate = useNavigate()
 
-  console.log(params)
   return (
-    <div className="channel-info-nav">
+    <motion.div
+      className="channel-info-nav nav"
+      initial={{ opacity: '0' }}
+      animate={{ opacity: '1' }}
+      exit={{ opacity: '0' }}
+    >
       <div className="header">
-        <img src={backBtn} alt="back" onClick={handleNavToggle} />
+        <img src={backBtn} alt="back" onClick={() => navigate('/channels')} />
         <p>All Channels</p>
+        <div className="img-container">
+          <img src={cancelBtn} alt="cancel" />
+        </div>
       </div>
       <div className="container">
         <p className="name">{channelInfo.channelName}</p>
@@ -45,7 +50,7 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({ channelInfo }) {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

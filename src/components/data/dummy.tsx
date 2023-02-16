@@ -1,4 +1,4 @@
-import userImg from '../../assets/user-solid.svg'
+import userImg from '../../assets/MyProfile.jpg'
 
 const DUMMY_DATA = [
   {
