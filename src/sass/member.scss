@@ -1,0 +1,18 @@
+@use './variables' as *;
+
+.member {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacer;
+
+  img {
+    width: 45px;
+    border-radius: 7px;
+  }
+  p {
+    color: $font-gray-200;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+  }
+}

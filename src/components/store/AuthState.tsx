@@ -10,9 +10,9 @@ import { NavigateFunction } from 'react-router-dom'
 import { auth, googleProvider } from '../Data/firebase'
 interface SignIn {
   type: 'GOOGLE' | 'EMAILANDPASSWORDSIGNUP' | 'EMAILANDPASSWORDLOGIN'
+  navigateFn: NavigateFunction
   email?: string
   password?: string
-  navigateFn: NavigateFunction
 }
 
 const initialState: {

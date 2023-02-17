@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { MouseEvent, useState } from 'react'
 
-import Button from './Button'
 import '../../sass/UI/modal.scss'
+import Button from './Button'
 
-function Modal({ action, children, setShowModal }) {
+const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
+  setIsModalOpen,
+}) {
+  const closeModalHandler = function (e: MouseEvent<HTMLDivElement>) {
+    if (!(e.target! as Element).closest('.container')) setIsModalOpen(false)
+  }
+
+  const root = document.getElementById('modal-root') as HTMLDivElement
+  root.addEventListener('click', closeModalHandler)
+
   return (
     <div className="modal">
-      <div className="backdrop"></div>
       <div className="container">
-        <p>{children}</p>
-        <Button onClick={action}>Continue</Button>
-        <Button onClick={() => setShowModal(false)}>Back</Button>
+        <h2>New Channel</h2>
+        <input type="text" placeholder="Channel name" />
+        <textarea placeholder="Channel Description" />
+        <Button>Save</Button>
       </div>
     </div>
   )

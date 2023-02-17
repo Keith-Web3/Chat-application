@@ -4,9 +4,10 @@ import { nanoid } from 'nanoid'
 import { motion } from 'framer-motion'
 
 import backBtn from '../assets/chevron-left-solid.svg'
-import User from './User'
+import Member from './Member'
 import '../sass/channel_info_nav.scss'
 import cancelBtn from '../assets/xmark-solid.svg'
+import User from './User'
 
 interface NavBarProps {
   channelInfo: {
@@ -14,6 +15,7 @@ interface NavBarProps {
     channelDesc: string
     channelMembers: [string, string][]
   }
+  isNavOpen: boolean
 }
 
 const handleNavToggle = function () {
@@ -22,13 +24,16 @@ const handleNavToggle = function () {
   nav.classList.toggle('active')
 }
 
-const ChannelInfoNav: React.FC<NavBarProps> = function ({ channelInfo }) {
+const ChannelInfoNav: React.FC<NavBarProps> = function ({
+  channelInfo,
+  isNavOpen,
+}) {
   const params = useParams()
   const navigate = useNavigate()
 
   return (
     <motion.div
-      className="channel-info-nav nav"
+      className={`channel-info-nav nav ${isNavOpen ? 'active' : ''}`}
       initial={{ opacity: '0' }}
       animate={{ opacity: '1' }}
       exit={{ opacity: '0' }}
@@ -46,10 +51,11 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({ channelInfo }) {
         <div className="members">
           <p>Members</p>
           {channelInfo.channelMembers.map(member => (
-            <User img={member[0]} name={member[1]} key={nanoid()} />
+            <Member img={member[0]} name={member[1]} key={nanoid()} />
           ))}
         </div>
       </div>
+      <User />
     </motion.div>
   )
 }

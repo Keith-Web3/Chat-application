@@ -1,6 +1,6 @@
 @use './variables' as *;
 
-.user-message {
+.member-message {
   @include grid(
     $row: repeat(2, auto),
     $column: repeat(2, auto) 1fr,

@@ -4,21 +4,27 @@ import { motion } from 'framer-motion'
 
 import plus from '../assets/plus-solid.svg'
 import searchIcon from '../assets/magnifying-glass-solid.svg'
-import { channelNames } from './data/dummy'
+import { channelNames } from './Data/dummy'
 import Channel from './Channel'
 import '../sass/all_channels.scss'
+import User from './User'
 
-const AllChannels: React.FC = function () {
+interface Props {
+  isNavOpen: boolean
+  setIsModalOpen: Function
+}
+
+const AllChannels: React.FC<Props> = function ({ isNavOpen, setIsModalOpen }) {
   return (
     <motion.div
-      className="all-channels nav"
+      className={`all-channels nav ${isNavOpen ? 'active' : ''}`}
       initial={{ opacity: '0' }}
       animate={{ opacity: '1' }}
       exit={{ opacity: '0' }}
     >
       <div className="header">
         <p>Channels</p>
-        <div className="img-container">
+        <div className="img-container" onClick={() => setIsModalOpen(true)}>
           <img src={plus} alt="add channel" />
         </div>
       </div>
@@ -33,6 +39,7 @@ const AllChannels: React.FC = function () {
           ))}
         </div>
       </div>
+      <User />
     </motion.div>
   )
 }

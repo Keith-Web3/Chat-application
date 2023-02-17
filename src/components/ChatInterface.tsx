@@ -1,12 +1,14 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Outlet } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 
 import '../sass/chat_interface.scss'
 import DUMMY_DATA from './Data/dummy'
-import UserMessage from './UserMessage'
+import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
+import Modal from './UI/Modal'
 
 interface ChatInterfaceProps {
   channelInfo: {
@@ -14,25 +16,31 @@ interface ChatInterfaceProps {
     channelDesc: string
     channelMembers: [string, string][]
   }
+  isModalOpen: boolean
+  setIsNavOpen: Function
+  setIsModalOpen: Function
 }
 
-const handleNavToggle = function () {
-  const nav = document.querySelector('.nav')! as HTMLDivElement
-  console.log('toggled')
-  nav.classList.toggle('active')
-}
-
-const generalNavClose = function (e: MouseEvent<HTMLElement>) {
-  if (
-    !(e.target as HTMLElement)!.closest('.nav') &&
-    !(e.target as HTMLElement).matches('.menu') &&
-    document.querySelector('.nav')?.classList.contains('active')
-  ) {
-    handleNavToggle()
+const ChatInterface: React.FC<ChatInterfaceProps> = function ({
+  channelInfo,
+  isModalOpen,
+  setIsNavOpen,
+  setIsModalOpen,
+}) {
+  const handleNavToggle = function () {
+    setIsNavOpen((prev: boolean) => !prev)
   }
-}
 
-const ChatInterface: React.FC<ChatInterfaceProps> = function ({ channelInfo }) {
+  const generalNavClose = function (e: MouseEvent<HTMLElement>) {
+    if (
+      !(e.target as HTMLElement)!.closest('.nav') &&
+      !(e.target as HTMLElement).matches('.menu') &&
+      document.querySelector('.nav')?.classList.contains('active')
+    ) {
+      handleNavToggle()
+    }
+  }
+
   return (
     <main className="chat-interface" onClick={generalNavClose}>
       <Outlet />
@@ -49,7 +57,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({ channelInfo }) {
         <div className="container">
           <div className="messages-container">
             {DUMMY_DATA.map(data => (
-              <UserMessage key={nanoid()} {...data} />
+              <MemberMessage key={nanoid()} {...data} />
             ))}
           </div>
           <label htmlFor="message" className="message-input">
@@ -59,6 +67,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({ channelInfo }) {
             </button>
           </label>
         </div>
+        {ReactDOM.createPortal(
+          isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />,
+          document.getElementById('modal-root') as Element
+        )}
       </section>
     </main>
   )

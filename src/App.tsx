@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { useSelector, useDispatch } from 'react-redux'
@@ -48,24 +48,53 @@ const App: React.FC = function () {
     channelReducerFn,
     initialReducerArg
   )
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false)
   const user = useSelector((state: { user: any; isLoggedIn: boolean }) => state)
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
   }, [])
+  useEffect(() => {
+    document.body.style.overflowY = isModalOpen ? 'hidden' : 'unset'
+    document.querySelector('html')!.style.overflowY = isModalOpen
+      ? 'hidden'
+      : 'unset'
+    window.scrollTo(0, 0)
+  }, [isModalOpen])
 
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       {user.user && (
-        <Route path="/" element={<ChatInterface channelInfo={channelInfo} />}>
+        <Route
+          path="/"
+          element={
+            <ChatInterface
+              isModalOpen={isModalOpen}
+              setIsNavOpen={setIsNavOpen}
+              setIsModalOpen={setIsModalOpen}
+              channelInfo={channelInfo}
+            />
+          }
+        >
           <Route
             path=":name"
-            element={<ChannelInfoNav channelInfo={channelInfo} />}
+            element={
+              <ChannelInfoNav isNavOpen={isNavOpen} channelInfo={channelInfo} />
+            }
           />
-          <Route path="channels" element={<AllChannels />} />
+          <Route
+            path="channels"
+            element={
+              <AllChannels
+                isNavOpen={isNavOpen}
+                setIsModalOpen={setIsModalOpen}
+              />
+            }
+          />
         </Route>
       )}
       <Route path="*" element={<Navigate to={'/signup'} />} />

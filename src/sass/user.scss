@@ -2,17 +2,34 @@
 
 .user {
   display: flex;
+  gap: $spacer;
   align-items: center;
-  margin-bottom: $spacer;
+  padding: $spacer;
+  position: sticky;
+  inset: auto 0 0 0;
+  background-color: $dark-300;
+  height: max-content;
+  margin-top: auto;
 
   img {
     width: 45px;
+    aspect-ratio: 1 / 1;
     border-radius: 7px;
   }
-  p {
-    color: $font-gray-200;
-    font-weight: 700;
-    width: 100%;
-    text-align: center;
+  .name {
+    text-transform: uppercase;
+  }
+  .child {
+    display: flex;
+    align-items: center;
+    gap: $spacer;
+    color: $red;
+    font-weight: 600;
+    margin-left: auto;
+    cursor: pointer;
+
+    img {
+      width: 25px;
+    }
   }
 }

@@ -13,12 +13,7 @@ const Channel: React.FC<{ name: string }> = function ({ name }) {
     .slice(0, 2)
 
   return (
-    <div
-      className="channel"
-      onClick={() => {
-        navigate(`/:${name}`)
-      }}
-    >
+    <div className="channel" onClick={() => navigate(`/:${name}`)}>
       <p className="logo">{abbreviatedName}</p>
       <p className="name">{name}</p>
     </div>

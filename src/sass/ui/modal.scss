@@ -1,46 +1,49 @@
-.modal {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  padding: 1em;
-  display: grid;
-  place-items: center;
+@use '../variables.scss' as *;
 
-  .backdrop {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(#000, 0.2);
-    backdrop-filter: blur(5px);
+.modal {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  * {
+    display: block;
   }
   .container {
-    max-width: max-content;
-    padding: 1em;
-    z-index: 1;
-    position: relative;
-    background-color: #fff;
-    display: grid;
-    grid-template: repeat(2, auto) / repeat(2, auto);
-    grid-template-areas: 'message message' 'btn1 btn2';
+    background-color: $dark-300;
+    padding: $spacer * 2;
+    border-radius: 24px;
+    width: min(90%, 480px);
+    margin: auto;
+  }
+  h2 {
+    font-size: 1rem;
+    color: $font-gray-100;
+  }
+  input {
+    margin-block: $spacer;
+  }
+  textarea {
+    resize: none;
+    height: 100px;
+  }
+  input,
+  textarea {
+    background-color: $input-gray;
+    border: none;
+    outline: none;
     border-radius: 8px;
-
-    p {
-      grid-area: message;
-      font-weight: 500;
-    }
-
-    button {
-      width: max-content;
-      color: #fff;
-
-      &:first-of-type {
-        grid-area: btn1;
-        background-color: red;
-      }
-      &:last-of-type {
-        grid-area: btn2;
-        margin-left: auto;
-        background-color: #2f80ed;
-      }
-    }
+    padding: 0.75em 1.3em;
+    width: 100% !important;
+    color: $font-gray-100;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: $blue;
+    padding: 0.75em 1.3em;
+    border-radius: 8px;
+    color: $font-gray-100;
+    font-weight: 600;
+    margin: $spacer 0 0 auto;
+    text-transform: unset;
   }
 }

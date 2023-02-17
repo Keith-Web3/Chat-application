@@ -1,11 +1,13 @@
 @use './variables' as *;
 
 .all-channels {
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
   background-color: $dark-200;
   color: $font-gray-100;
   z-index: 3;
   position: fixed;
-  padding-top: calc(52px + $spacer);
+  inset: 0 0 auto 0;
   width: min(90%, 370px);
   height: 100vh;
   overflow-x: hidden;
@@ -29,11 +31,12 @@
     justify-content: space-between;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     padding: $spacer;
-    position: fixed;
-    inset: 0 auto auto 0;
+    position: sticky;
+    inset: 0 0 auto 0;
     width: 100%;
     isolation: isolate;
     background-color: $dark-200;
+    height: max-content;
 
     .img-container {
       background-color: $dark-100;

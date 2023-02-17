@@ -2,4 +2,19 @@
 
 body {
   font-family: 'Noto Sans', 'Nunito', Verdana, Geneva, Tahoma, sans-serif;
+  position: relative;
+  scroll-behavior: smooth;
+}
+#modal-root {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100vh;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 15, 19, 0.5);
+
+  &:empty {
+    display: none;
+  }
 }

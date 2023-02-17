@@ -1,22 +1,22 @@
 import React from 'react'
 
-import '../sass/user_message.scss'
+import '../sass/member_message.scss'
 
-interface userMessageProp {
+interface MemberMessageProp {
   img: string
   name: string
   date: string
   message: string
 }
 
-const UserMessage: React.FC<userMessageProp> = function ({
+const MemberMessage: React.FC<MemberMessageProp> = function ({
   img,
   name,
   date,
   message,
 }) {
   return (
-    <div className="user-message">
+    <div className="member-message">
       <img src={img} alt={name} />
       <p className="name">{name}</p>
       <p className="date">{date}</p>
@@ -25,4 +25,4 @@ const UserMessage: React.FC<userMessageProp> = function ({
   )
 }
 
-export default UserMessage
+export default MemberMessage
