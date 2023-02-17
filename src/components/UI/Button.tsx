@@ -1,5 +1,5 @@
 import React, { ReactNode, MouseEvent } from 'react'
-import './button.scss'
+import '../../sass/UI/button.scss'
 
 interface Props {
   children: ReactNode

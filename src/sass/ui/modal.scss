@@ -1,0 +1,46 @@
+.modal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1em;
+  display: grid;
+  place-items: center;
+
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(#000, 0.2);
+    backdrop-filter: blur(5px);
+  }
+  .container {
+    max-width: max-content;
+    padding: 1em;
+    z-index: 1;
+    position: relative;
+    background-color: #fff;
+    display: grid;
+    grid-template: repeat(2, auto) / repeat(2, auto);
+    grid-template-areas: 'message message' 'btn1 btn2';
+    border-radius: 8px;
+
+    p {
+      grid-area: message;
+      font-weight: 500;
+    }
+
+    button {
+      width: max-content;
+      color: #fff;
+
+      &:first-of-type {
+        grid-area: btn1;
+        background-color: red;
+      }
+      &:last-of-type {
+        grid-area: btn2;
+        margin-left: auto;
+        background-color: #2f80ed;
+      }
+    }
+  }
+}

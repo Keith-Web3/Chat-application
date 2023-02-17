@@ -1,111 +1,92 @@
-import { createSlice, configureStore } from '@reduxjs/toolkit'
-import thunk from 'redux-thunk'
+import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit'
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
+  createUserWithEmailAndPassword,
 } from 'firebase/auth'
-import {
-  auth,
-  googleProvider,
-  facebookProvider,
-  githubProvider,
-  twitterProvider,
-} from '../Data/firebase'
+import thunk from 'redux-thunk'
+import { NavigateFunction } from 'react-router-dom'
 
-const authSlice = createSlice({
-  name: 'auth',
-  initialState: {
-    isLoggedIn: false,
-    errorMessage: '',
-    user: null,
-    isLoading: false,
-  },
+import { auth, googleProvider } from '../Data/firebase'
+interface SignIn {
+  type: 'GOOGLE' | 'EMAILANDPASSWORDSIGNUP' | 'EMAILANDPASSWORDLOGIN'
+  email?: string
+  password?: string
+  navigateFn: NavigateFunction
+}
+
+const initialState: {
+  user: null | { [props: string]: any }
+  isLoggedIn: boolean
+} = {
+  user: null,
+  isLoggedIn: false,
+}
+
+const userState = createSlice({
+  name: 'user',
+  initialState: initialState,
   reducers: {
-    submit(state, { payload: { user, error } }) {
-      if (user) {
+    login(
+      state,
+      action: PayloadAction<{
+        user: { [props: string]: any }
+        navigateFn: NavigateFunction
+      }>
+    ) {
+      const { payload } = action
+
+      if (payload.user) {
+        state.user = payload.user
         state.isLoggedIn = true
-        state.user = JSON.stringify(user)
-      } else {
-        state.errorMessage = error
+        payload.navigateFn('/channels')
       }
-    },
-    setLoading(state, action) {
-      state.isLoading = action.payload.isLoading
-    },
-    resetErrorMessage(state, action) {
-      window.scrollTo(0, 0)
-      state.errorMessage = action.payload
     },
   },
 })
 
-export const submit = function ({
-  type,
-  email,
-  password,
-  navigate,
-  isLoading,
-}) {
-  return async dispatch => {
+export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
+  return async function (dispatch: Function): Promise<void> {
     try {
-      if (isLoading === true)
-        throw new Error('Please wait, previous request processing...')
-      dispatch(authSlice.actions.setLoading({ isLoading: true }))
-      let userCredentials
       switch (type) {
-        case 'SIGNUP':
-          userCredentials = await createUserWithEmailAndPassword(
+        case 'GOOGLE': {
+          const response = await signInWithPopup(auth, googleProvider)
+          const user = response.user
+
+          dispatch(userState.actions.login({ user, navigateFn }))
+          break
+        }
+        case 'EMAILANDPASSWORDLOGIN': {
+          const response = await signInWithEmailAndPassword(
             auth,
-            email,
-            password
+            email!,
+            password!
           )
+          const user = response.user
+
+          dispatch(userState.actions.login({ user, navigateFn }))
           break
-        case 'LOGIN':
-          userCredentials = await signInWithEmailAndPassword(
+        }
+        case 'EMAILANDPASSWORDSIGNUP': {
+          const response = await createUserWithEmailAndPassword(
             auth,
-            email,
-            password
+            email!,
+            password!
           )
-          break
-        case 'GOOGLE':
-          userCredentials = await signInWithPopup(auth, googleProvider)
-          break
-        case 'FACEBOOK':
-          userCredentials = await signInWithPopup(auth, facebookProvider)
-          console.log(userCredentials)
-          break
-        case 'GITHUB':
-          userCredentials = await signInWithPopup(auth, githubProvider)
-          break
-        case 'TWITTER':
-          userCredentials = await signInWithPopup(auth, twitterProvider)
-          break
-        default:
-          break
+          const user = response.user
+
+          dispatch(userState.actions.login({ user, navigateFn }))
+        }
       }
-      dispatch(
-        authSlice.actions.submit({
-          user: userCredentials.user,
-          error: null,
-        })
-      )
-      navigate('/profile')
-    } catch (err) {
-      dispatch(
-        authSlice.actions.submit({
-          user: null,
-          error: err.message,
-        })
-      )
-    } finally {
-      dispatch(authSlice.actions.setLoading({ isLoading: false }))
+    } catch (err: any) {
+      console.log(err.message)
     }
   }
 }
 
-export const actions = authSlice.actions
+export const actions = userState.actions
+
 export const store = configureStore({
-  reducer: authSlice.reducer,
+  reducer: userState.reducer,
   middleware: [thunk],
 })

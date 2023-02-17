@@ -1,0 +1,26 @@
+.edit-input {
+  display: block;
+  color: #4f4f4f;
+  font-weight: 500;
+  margin-bottom: 1em;
+  width: 100%;
+  max-width: 466px;
+
+  input,
+  textarea {
+    display: block;
+    border: 1px solid #828282;
+    outline: none;
+    border-radius: 12px;
+    padding: 0.75em 1.3em;
+    resize: none;
+    width: 100%;
+
+    &[name='Bio'] {
+      height: 120px;
+    }
+    &::placeholder {
+      color: #bdbdbd;
+    }
+  }
+}

@@ -1,22 +1,33 @@
-import React from 'react'
 import { nanoid } from 'nanoid'
+import { useDispatch } from 'react-redux/es/exports'
 
-import googleImg from '../../assets/Google.svg'
-import facebookImg from '../../assets/Facebook.svg'
-import twitterImg from '../../assets/Twitter.svg'
-import githubImg from '../../assets/Github.svg'
+import { signIn } from '../store/AuthState'
+import googleImg from '../../assets/google.png'
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
+import { useNavigate } from 'react-router-dom'
 
-function SocialProfiles({ eventListener, keys }) {
+const SocialProfiles: React.FC = function () {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const googleLoginHandler = function () {
+    dispatch(
+      signIn({
+        type: 'GOOGLE',
+        navigateFn: navigate,
+      }) as unknown as ActionCreatorWithPayload<{
+        type: 'GOOGLE' | 'EMAILANDPASSWORD'
+        email?: string
+        password?: string
+      }>
+    )
+  }
   return (
-    <div className="social-profiles">
-      {[googleImg, facebookImg, twitterImg, githubImg].map((img, idx) => (
-        <img
-          src={img}
-          alt="social"
-          key={nanoid()}
-          onClick={eventListener?.(keys[idx])}
-        />
+    <div className="social-profiles" onClick={googleLoginHandler}>
+      {[googleImg].map((img, idx) => (
+        <img src={img} alt="social" key={nanoid()} />
       ))}
+      <p>Sign in with Google</p>
     </div>
   )
 }

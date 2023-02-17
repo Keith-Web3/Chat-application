@@ -26,7 +26,7 @@ const timerVariant = {
   },
 }
 
-function Popup({ message }) {
+const Popup: React.FC<{ message: string }> = function ({ message }) {
   return (
     <motion.div
       className="popup"

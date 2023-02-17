@@ -1,0 +1,31 @@
+.auth-input {
+  display: flex;
+  position: relative;
+  margin-top: 1em;
+
+  img {
+    width: 20px;
+    position: absolute;
+    inset: 50% auto auto 1.5em;
+    transform: translate(-50%, -50%);
+  }
+  input {
+    border: 1px solid #bdbdbd;
+    outline: none;
+    width: 100%;
+    border-radius: 8px;
+    padding: 0.75em 1.3em 0.75em 3em;
+    background-image: none !important;
+    letter-spacing: -0.035em;
+    color: #828282;
+    background-color: transparent;
+
+    &:-internal-autofill-selected {
+      font-weight: 400 !important;
+    }
+
+    &::placeholder {
+      text-transform: capitalize;
+    }
+  }
+}
