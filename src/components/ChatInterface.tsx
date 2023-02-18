@@ -1,6 +1,6 @@
-import React, { MouseEvent, useState } from 'react'
+import React, { MouseEvent } from 'react'
 import ReactDOM from 'react-dom'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 
 import '../sass/chat_interface.scss'
@@ -9,12 +9,19 @@ import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
 import Modal from './UI/Modal'
+import copyImg from '../assets/copy-solid.svg'
 
 interface ChatInterfaceProps {
   channelInfo: {
     channelName: string
     channelDesc: string
-    channelMembers: [string, string][]
+    channelId: string
+    channelMembers: {
+      id: string
+      photoURL: string
+      name: string
+      email: string
+    }[]
   }
   isModalOpen: boolean
   setIsNavOpen: Function
@@ -27,9 +34,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   setIsNavOpen,
   setIsModalOpen,
 }) {
+  console.log(channelInfo)
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
+  const navigate = useNavigate()
 
   const generalNavClose = function (e: MouseEvent<HTMLElement>) {
     if (
@@ -53,6 +62,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
+          <div
+            className="copy-link"
+            onClick={() => navigate(`/join/:${channelInfo.channelId}`)}
+          >
+            <p>Invite Link</p>
+            <img src={copyImg} alt="copy" />
+          </div>
         </header>
         <div className="container">
           <div className="messages-container">

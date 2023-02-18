@@ -1,7 +1,6 @@
 import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { nanoid } from 'nanoid'
-import { motion } from 'framer-motion'
 
 import backBtn from '../assets/chevron-left-solid.svg'
 import Member from './Member'
@@ -13,7 +12,12 @@ interface NavBarProps {
   channelInfo: {
     channelName: string
     channelDesc: string
-    channelMembers: [string, string][]
+    channelMembers: {
+      id: string
+      photoURL: string
+      name: string
+      email: string
+    }[]
   }
   isNavOpen: boolean
 }
@@ -32,12 +36,7 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
   const navigate = useNavigate()
 
   return (
-    <motion.div
-      className={`channel-info-nav nav ${isNavOpen ? 'active' : ''}`}
-      initial={{ opacity: '0' }}
-      animate={{ opacity: '1' }}
-      exit={{ opacity: '0' }}
-    >
+    <div className={`channel-info-nav nav ${isNavOpen ? 'active' : ''}`}>
       <div className="header">
         <img src={backBtn} alt="back" onClick={() => navigate('/channels')} />
         <p>All Channels</p>
@@ -51,12 +50,17 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
         <div className="members">
           <p>Members</p>
           {channelInfo.channelMembers.map(member => (
-            <Member img={member[0]} name={member[1]} key={nanoid()} />
+            <Member
+              img={member.photoURL}
+              name={member.name}
+              email={member.email}
+              key={nanoid()}
+            />
           ))}
         </div>
       </div>
       <User />
-    </motion.div>
+    </div>
   )
 }
 

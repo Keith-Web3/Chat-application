@@ -32,6 +32,17 @@
       p {
         text-transform: uppercase;
       }
+      .copy-link {
+        font-weight: 500;
+        display: flex;
+        gap: $spacer;
+        cursor: pointer;
+        margin-left: auto;
+
+        img {
+          display: block;
+        }
+      }
     }
     .container {
       padding: $spacer;

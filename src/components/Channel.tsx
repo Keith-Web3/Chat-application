@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom'
 
 import '../sass/channel.scss'
 
-const Channel: React.FC<{ name: string }> = function ({ name }) {
+const Channel: React.FC<{
+  name: string
+  onClick: Function
+}> = function ({ name, onClick }) {
   const navigate = useNavigate()
 
   const abbreviatedName = name
@@ -13,7 +16,13 @@ const Channel: React.FC<{ name: string }> = function ({ name }) {
     .slice(0, 2)
 
   return (
-    <div className="channel" onClick={() => navigate(`/:${name}`)}>
+    <div
+      className="channel"
+      onClick={() => {
+        onClick()
+        navigate(`/:${name}`)
+      }}
+    >
       <p className="logo">{abbreviatedName}</p>
       <p className="name">{name}</p>
     </div>

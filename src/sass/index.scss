@@ -10,11 +10,14 @@ body {
   inset: 0 0 auto 0;
   height: 100vh;
   z-index: 4;
+  opacity: 1;
+  transition: opacity 250ms linear;
   display: grid;
   place-items: center;
   background: rgba(18, 15, 19, 0.5);
 
   &:empty {
-    display: none;
+    opacity: 0;
+    z-index: -4;
   }
 }

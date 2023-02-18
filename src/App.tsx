@@ -12,33 +12,43 @@ import ChannelInfoNav from './components/ChannelInfoNav'
 import ChatInterface from './components/ChatInterface'
 import AllChannels from './components/AllChannels'
 import SignUp from './components/Auth/SignUp'
+import { nanoid } from '@reduxjs/toolkit'
+import JoinChannel from './components/JoinChannel'
 
 interface reducer {
   channelName: string
   channelDesc: string
-  channelMembers: [string, string][]
+  channelId: string
+  channelMembers: {
+    id: string
+    photoURL: string
+    name: string
+    email: string
+  }[]
+  channelMessages: any[]
 }
 
 const channelReducerFn = function (
   state: reducer,
-  action: { type: string; payload: any }
+  action: { type: string; payload: reducer }
 ): reducer {
-  return {
-    channelName: '',
-    channelDesc: '',
-    channelMembers: [],
-  }
+  return action.payload
 }
 
 const initialReducerArg: reducer = {
   channelName: 'Front-end developers',
+  channelId: nanoid(),
   channelDesc:
     'Pellentesque sagittis elit enim, sit amet ultrices tellus accumsan quis. In gravida mollis purus, at interdum arcu tempor non',
   channelMembers: [
-    [userImg, 'Xanthe Neal'],
-    [userImg, 'Nellie Francis'],
-    [userImg, 'Denzel Barrett'],
+    {
+      id: nanoid(),
+      photoURL: userImg,
+      name: 'Xanthe Neal',
+      email: 'xan@gmail.com',
+    },
   ],
+  channelMessages: [],
 }
 
 const App: React.FC = function () {
@@ -68,6 +78,7 @@ const App: React.FC = function () {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/join" element={<JoinChannel />} />
       {user.user && (
         <Route
           path="/"
@@ -92,6 +103,7 @@ const App: React.FC = function () {
               <AllChannels
                 isNavOpen={isNavOpen}
                 setIsModalOpen={setIsModalOpen}
+                channelDispatch={dispatchFn}
               />
             }
           />
