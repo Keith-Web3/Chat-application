@@ -1,11 +1,11 @@
 import { useReducer, useEffect, useState } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
 
 import { actions } from './components/store/AuthState'
-import { auth } from './components/Data/firebase'
+import { auth, database } from './components/Data/firebase'
 import Login from './components/Auth/Login'
 import userImg from './assets/MyProfile.jpg'
 import ChannelInfoNav from './components/ChannelInfoNav'
@@ -60,12 +60,28 @@ const App: React.FC = function () {
   )
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false)
+  const [joinChannelId, setJoinChannelId] = useState<string>('')
+
   const user = useSelector((state: { user: any; isLoggedIn: boolean }) => state)
+
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
+
+    const channel = doc(database, 'channels', joinChannelId)
+    ;(async () => {
+      await updateDoc(channel, {
+        members: arrayUnion({
+          id: auth.currentUser!.uid,
+          photoURL: auth.currentUser!.photoURL,
+          name: auth.currentUser!.displayName,
+          email: auth.currentUser!.email,
+        }),
+      })
+    })()
   }, [])
+
   useEffect(() => {
     document.body.style.overflowY = isModalOpen ? 'hidden' : 'unset'
     document.querySelector('html')!.style.overflowY = isModalOpen
@@ -78,7 +94,10 @@ const App: React.FC = function () {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/join" element={<JoinChannel />} />
+      <Route
+        path="/join"
+        element={<JoinChannel setJoinChannelId={setJoinChannelId} />}
+      />
       {user.user && (
         <Route
           path="/"
