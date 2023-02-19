@@ -2,7 +2,7 @@
 This is a chat application built with Vite, React, and TypeScript. It supports private messaging, creating and messaging in public channels, and video calls implemented using WebRTC. The messaging feature is implemented using Firebase for real-time communication.
 ## To get started, clone the repository and install dependencies:
 ```html
-git clone https://github.com/Keith-Web3/chat-app.git
+git clone https://github.com/Keith-Web3/Chat-application.git
 cd chat-app
 npm install
 ```
