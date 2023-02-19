@@ -1,12 +1,17 @@
-import React, { MouseEvent, useRef, useState, useEffect } from 'react'
+import React, {
+  MouseEvent,
+  useRef,
+  useState,
+  useEffect,
+  KeyboardEventHandler,
+} from 'react'
 import ReactDOM from 'react-dom'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import { onSnapshot, collection } from 'firebase/firestore'
 
 import { sendMessage } from './Utils/chatFunctions'
 import '../sass/chat_interface.scss'
-import DUMMY_DATA from './Data/dummy'
 import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
@@ -37,11 +42,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   setIsNavOpen,
   setIsModalOpen,
 }) {
-  console.log(channelInfo)
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
-  const location = useLocation()
+  const enterSubmit: KeyboardEventHandler<HTMLInputElement> = function (e) {
+    if (e.key === 'Enter') {
+      sendMessage(messageRef.current!.value, channelInfo.channelId)
+    }
+  }
   const messageRef = useRef<HTMLInputElement>(null)
   const [allMessages, setAllMessages] = useState<
     {
@@ -97,11 +105,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
           <p>{channelInfo.channelName}</p>
           <div
             className="copy-link"
-            onClick={() =>
+            onClick={() => {
               navigator.clipboard.writeText(
                 `https://astounding-choux-c5148e.netlify.app/join/:${channelInfo.channelId}`
               )
-            }
+              alert('Invite link copied to clipboard!')
+            }}
           >
             <p>Invite Link</p>
             <img src={copyImg} alt="copy" />
@@ -119,6 +128,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               id="message"
               placeholder="Type a message here"
               ref={messageRef}
+              onKeyDown={enterSubmit}
             />
             <button
               onClick={() =>

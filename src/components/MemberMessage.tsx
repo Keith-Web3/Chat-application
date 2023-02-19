@@ -36,8 +36,10 @@ const MemberMessage: React.FC<MemberMessageProp> = function ({
   return (
     <div className="member-message">
       <img src={img} alt={name} />
-      <p className="name">{name}</p>
-      <p className="date">{`${day}, ${time}`}</p>
+      <div className="header">
+        <p className="name">{name}</p>
+        <p className="date">{`${day}, ${time}`}</p>
+      </div>
       <p className="message">{message}</p>
     </div>
   )
