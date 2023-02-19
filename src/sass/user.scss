@@ -2,6 +2,7 @@
 
 .user {
   display: flex;
+  flex-wrap: wrap;
   gap: $spacer;
   align-items: center;
   padding: $spacer;

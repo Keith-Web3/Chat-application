@@ -1,8 +1,10 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, useRef, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { nanoid } from 'nanoid'
+import { onSnapshot, collection } from 'firebase/firestore'
 
+import { sendMessage } from './Utils/chatFunctions'
 import '../sass/chat_interface.scss'
 import DUMMY_DATA from './Data/dummy'
 import MemberMessage from './MemberMessage'
@@ -10,6 +12,7 @@ import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
 import Modal from './UI/Modal'
 import copyImg from '../assets/copy-solid.svg'
+import { database } from './Data/firebase'
 
 interface ChatInterfaceProps {
   channelInfo: {
@@ -38,7 +41,37 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
-  const navigate = useNavigate()
+  const location = useLocation()
+  const messageRef = useRef<HTMLInputElement>(null)
+  const [allMessages, setAllMessages] = useState<
+    {
+      date: number
+      message: string
+      userImg: string
+      userName: string
+      email: string
+    }[]
+  >([{ date: 0, message: '', userImg: '', userName: '', email: '' }])
+
+  useEffect(() => {
+    onSnapshot(collection(database, 'channels'), data => {
+      let messages: {
+        date: number
+        message: string
+        userImg: string
+        userName: string
+        email: string
+      }[] = []
+      data.docs.forEach(item => {
+        if (item.data().id === channelInfo.channelId) {
+          messages = item.data().messages
+        }
+      })
+      setAllMessages(messages)
+      console.log(messages)
+      messageRef.current!.value = ''
+    })
+  }, [channelInfo.channelId])
 
   const generalNavClose = function (e: MouseEvent<HTMLElement>) {
     if (
@@ -64,7 +97,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
           <p>{channelInfo.channelName}</p>
           <div
             className="copy-link"
-            onClick={() => navigate(`/join/:${channelInfo.channelId}`)}
+            onClick={() => navigator.clipboard.writeText(location.pathname)}
           >
             <p>Invite Link</p>
             <img src={copyImg} alt="copy" />
@@ -72,13 +105,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
         </header>
         <div className="container">
           <div className="messages-container">
-            {DUMMY_DATA.map(data => (
+            {allMessages.map(data => (
               <MemberMessage key={nanoid()} {...data} />
             ))}
           </div>
           <label htmlFor="message" className="message-input">
-            <input type="text" id="message" placeholder="Type a message here" />
-            <button>
+            <input
+              type="text"
+              id="message"
+              placeholder="Type a message here"
+              ref={messageRef}
+            />
+            <button
+              onClick={() =>
+                sendMessage(messageRef.current!.value, channelInfo.channelId)
+              }
+            >
               <img src={sendBtn} alt="send" />
             </button>
           </label>

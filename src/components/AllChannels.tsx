@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, onSnapshot } from 'firebase/firestore'
 
 import plus from '../assets/plus-solid.svg'
 import searchIcon from '../assets/magnifying-glass-solid.svg'
@@ -39,19 +39,20 @@ const AllChannels: React.FC<Props> = function ({
   useEffect(() => {
     ;(async () => {
       try {
-        const querySnapShot = await getDocs(collection(database, 'channels'))
-        let channels: any[] = []
-        querySnapShot.forEach(doc => {
-          channels = [...channels, doc.data()]
+        onSnapshot(collection(database, 'channels'), data => {
+          let channels: any[] = []
+          data.docs.forEach(item => {
+            channels = [...channels, item.data()]
+          })
+          channels = channels.filter(
+            el =>
+              el.members.findIndex(
+                (obj: any) => obj.id === auth.currentUser?.uid
+              ) + 1
+          )
+          setChannels(channels)
+          setIsModalOpen(false)
         })
-        channels = channels.filter(
-          el =>
-            el.members.findIndex(
-              (obj: any) => obj.id === auth.currentUser?.uid
-            ) + 1
-        )
-        setChannels(channels)
-        console.log(channels)
       } catch (err) {
         console.log(err)
       }

@@ -4,7 +4,7 @@ import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
 import { auth } from './Data/firebase'
-import userImg from '../assets/MyProfile.jpg'
+import userImg from '../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
 import logoutBtn from '../assets/arrow-right-from-bracket-solid.svg'
 import '../sass/user.scss'
 

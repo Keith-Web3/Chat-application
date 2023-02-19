@@ -1,7 +1,7 @@
 import React from 'react'
 
 import '../sass/member.scss'
-import userImg from '../assets/user-solid.svg'
+import userImg from '../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
 
 interface MemberProps {
   img: string
@@ -9,7 +9,7 @@ interface MemberProps {
   email: string
 }
 
-const Member: React.FC<MemberProps> = function ({ img, name, email }) {
+const Member: React.FC<MemberProps> = function ({ img, name, email = '' }) {
   const editedName = name || email.slice(0, email.indexOf('@'))
 
   return (

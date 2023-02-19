@@ -34,6 +34,7 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
 }) {
   const params = useParams()
   const navigate = useNavigate()
+  console.log(channelInfo)
 
   return (
     <div className={`channel-info-nav nav ${isNavOpen ? 'active' : ''}`}>
