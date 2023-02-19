@@ -68,18 +68,19 @@ const App: React.FC = function () {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
-
-    const channel = doc(database, 'channels', joinChannelId)
-    ;(async () => {
-      await updateDoc(channel, {
-        members: arrayUnion({
-          id: auth.currentUser!.uid,
-          photoURL: auth.currentUser!.photoURL,
-          name: auth.currentUser!.displayName,
-          email: auth.currentUser!.email,
-        }),
-      })
-    })()
+    if (joinChannelId.length) {
+      const channel = doc(database, 'channels', joinChannelId)
+      ;(async () => {
+        await updateDoc(channel, {
+          members: arrayUnion({
+            id: auth.currentUser!.uid,
+            photoURL: auth.currentUser!.photoURL,
+            name: auth.currentUser!.displayName,
+            email: auth.currentUser!.email,
+          }),
+        })
+      })()
+    }
   }, [])
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const App: React.FC = function () {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route
-        path="/join"
+        path="/join/:channelId"
         element={<JoinChannel setJoinChannelId={setJoinChannelId} />}
       />
       {user.user && (

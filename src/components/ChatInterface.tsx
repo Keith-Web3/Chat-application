@@ -97,7 +97,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
           <p>{channelInfo.channelName}</p>
           <div
             className="copy-link"
-            onClick={() => navigator.clipboard.writeText(location.pathname)}
+            onClick={() =>
+              navigator.clipboard.writeText(
+                `https://astounding-choux-c5148e.netlify.app/join/:${channelInfo.channelId}`
+              )
+            }
           >
             <p>Invite Link</p>
             <img src={copyImg} alt="copy" />
