@@ -1,11 +1,10 @@
 import { useReducer, useEffect, useState } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
 
 import { actions } from './components/store/AuthState'
-import { auth, database } from './components/Data/firebase'
+import { auth } from './components/Data/firebase'
 import Login from './components/Auth/Login'
 import userImg from './assets/MyProfile.jpg'
 import ChannelInfoNav from './components/ChannelInfoNav'
@@ -60,7 +59,6 @@ const App: React.FC = function () {
   )
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false)
-  const [joinChannelId, setJoinChannelId] = useState<string>('')
 
   const user = useSelector((state: { user: any; isLoggedIn: boolean }) => state)
 
@@ -68,19 +66,6 @@ const App: React.FC = function () {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
-    if (joinChannelId.length) {
-      const channel = doc(database, 'channels', joinChannelId)
-      ;(async () => {
-        await updateDoc(channel, {
-          members: arrayUnion({
-            id: auth.currentUser!.uid,
-            photoURL: auth.currentUser!.photoURL,
-            name: auth.currentUser!.displayName,
-            email: auth.currentUser!.email,
-          }),
-        })
-      })()
-    }
   }, [])
 
   useEffect(() => {
@@ -95,10 +80,7 @@ const App: React.FC = function () {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route
-        path="/join/:channelId"
-        element={<JoinChannel setJoinChannelId={setJoinChannelId} />}
-      />
+      <Route path="/join/:channelId" element={<JoinChannel />} />
       {user.user && (
         <Route
           path="/"

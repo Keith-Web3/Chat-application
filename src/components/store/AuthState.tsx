@@ -5,9 +5,10 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth'
 import thunk from 'redux-thunk'
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { NavigateFunction } from 'react-router-dom'
 
-import { auth, googleProvider } from '../Data/firebase'
+import { auth, googleProvider, database } from '../Data/firebase'
 interface SignIn {
   type: 'GOOGLE' | 'EMAILANDPASSWORDSIGNUP' | 'EMAILANDPASSWORDLOGIN'
   navigateFn: NavigateFunction
@@ -18,9 +19,11 @@ interface SignIn {
 const initialState: {
   user: null | { [props: string]: any }
   isLoggedIn: boolean
+  inviteId: string
 } = {
   user: null,
   isLoggedIn: false,
+  inviteId: '',
 }
 
 const userState = createSlice({
@@ -40,7 +43,24 @@ const userState = createSlice({
         state.user = payload.user
         state.isLoggedIn = true
         payload.navigateFn('/channels')
+
+        if (state.inviteId.length) {
+          const channel = doc(database, 'channels', state.inviteId)
+          ;(async () => {
+            await updateDoc(channel, {
+              members: arrayUnion({
+                id: auth.currentUser!.uid,
+                photoURL: auth.currentUser!.photoURL,
+                name: auth.currentUser!.displayName,
+                email: auth.currentUser!.email,
+              }),
+            })
+          })()
+        }
       }
+    },
+    setInviteId(state, action: PayloadAction<{ inviteId: string }>) {
+      state.inviteId = action.payload.inviteId
     },
   },
 })
