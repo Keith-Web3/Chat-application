@@ -6,6 +6,37 @@ git clone https://github.com/Keith-Web3/Chat-application.git
 cd chat-app
 npm install
 ```
+## Setting up Firebase Credentials
+Before you can use the chat application, you will need to set up Firebase credentials for the app. To do this, follow these steps:
+
+1. Create a new Firebase project in the [Firebase Console](https://console.firebase.google.com/).
+
+2. Add a new web app to the project by clicking on the "Add app" button and selecting "Web".
+
+3. Give the app a nickname and click on "Register app".
+
+4. Copy the Firebase config object that appears on the next screen, which should look something like this:
+```
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  databaseURL: "your-database-url",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
+};
+```
+5. Create a new file in the root directory of the chat application called .env and add the following line, replacing the values with your Firebase config object values:
+```
+VITE_API_KEY = "your-api-key"
+VITE_AUTH_DOMAIN = "your-auth-domain"
+VITE_PROJECT_ID = "your-project-id"
+VITE_STORAGE_BUCKET = "your-storage-bucket"
+VITE_MESSAGING_SENDER_ID = "your-messaging-sender-id"
+VITE_APP_ID = "your-app-id"
+```
+
 To run the application, use the following command:
 ```html
 npm run dev
