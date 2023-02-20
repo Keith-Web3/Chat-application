@@ -58,5 +58,4 @@ export const sendMessage = async function (message: string, channelId: string) {
     }),
   })
   console.log('message sent')
-  window.scrollTo(1, 1)
 }

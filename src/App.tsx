@@ -73,7 +73,7 @@ const App: React.FC = function () {
     document.querySelector('html')!.style.overflowY = isModalOpen
       ? 'hidden'
       : 'unset'
-    window.scrollTo(0, 0)
+    window.scrollTo(1, 1)
   }, [isModalOpen])
 
   return (

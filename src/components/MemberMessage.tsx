@@ -26,9 +26,18 @@ const MemberMessage: React.FC<MemberMessageProp> = function ({
   ).padStart(2, '0')}`
   let day: string
 
-  if (Date.now() - date > 86400000 && Date.now() - date < 2 * 8640000) {
+  const tomorrowDate = new Date(date)
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1)
+
+  if (
+    new Intl.DateTimeFormat('en-GB').format(new Date()) ===
+    new Intl.DateTimeFormat('en-GB').format(tomorrowDate)
+  ) {
     day = 'yesterday'
-  } else if (Date.now() - date < 8640000) {
+  } else if (
+    new Intl.DateTimeFormat('en-GB').format(new Date()) ===
+    new Intl.DateTimeFormat('en-GB').format(modifiedDate)
+  ) {
     day = 'today'
   } else {
     day = new Intl.DateTimeFormat('en-GB').format(modifiedDate)
