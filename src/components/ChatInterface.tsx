@@ -30,6 +30,7 @@ interface ChatInterfaceProps {
       name: string
       email: string
     }[]
+    channelMessages: any[]
   }
   isModalOpen: boolean
   setIsNavOpen: Function
@@ -76,8 +77,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
         }
       })
       setAllMessages(messages)
-      console.log(messages)
-      messageRef.current!.value = ''
+      if (messageRef.current) messageRef.current!.value = ''
+      window.scrollTo(0, document.body.scrollHeight)
     })
   }, [channelInfo.channelId])
 
@@ -90,7 +91,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       handleNavToggle()
     }
   }
-
   return (
     <main className="chat-interface" onClick={generalNavClose}>
       <Outlet />
@@ -116,7 +116,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             <img src={copyImg} alt="copy" />
           </div>
         </header>
-        <div className="container">
+        <div className="main-container container">
           <div className="messages-container">
             {allMessages.map(data => (
               <MemberMessage key={nanoid()} {...data} />
@@ -127,6 +127,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               type="text"
               id="message"
               placeholder="Type a message here"
+              autoComplete="off"
               ref={messageRef}
               onKeyDown={enterSubmit}
             />

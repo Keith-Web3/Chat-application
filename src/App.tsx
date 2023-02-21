@@ -2,6 +2,7 @@ import { useReducer, useEffect, useState } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
+import { nanoid } from '@reduxjs/toolkit'
 
 import { actions } from './components/store/AuthState'
 import { auth } from './components/Data/firebase'
@@ -11,7 +12,6 @@ import ChannelInfoNav from './components/ChannelInfoNav'
 import ChatInterface from './components/ChatInterface'
 import AllChannels from './components/AllChannels'
 import SignUp from './components/Auth/SignUp'
-import { nanoid } from '@reduxjs/toolkit'
 import JoinChannel from './components/JoinChannel'
 
 interface reducer {
@@ -35,10 +35,9 @@ const channelReducerFn = function (
 }
 
 const initialReducerArg: reducer = {
-  channelName: 'Front-end developers',
-  channelId: nanoid(),
-  channelDesc:
-    'Pellentesque sagittis elit enim, sit amet ultrices tellus accumsan quis. In gravida mollis purus, at interdum arcu tempor non',
+  channelName: 'DEFAULT CHANNEL',
+  channelId: '16A4w32PivaHAasvXbflX1676971533389',
+  channelDesc: 'Test channel for all users',
   channelMembers: [
     {
       id: nanoid(),
@@ -69,11 +68,9 @@ const App: React.FC = function () {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflowY = isModalOpen ? 'hidden' : 'unset'
     document.querySelector('html')!.style.overflowY = isModalOpen
       ? 'hidden'
       : 'unset'
-    window.scrollTo(1, 1)
   }, [isModalOpen])
 
   return (

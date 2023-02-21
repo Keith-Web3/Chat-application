@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid'
 
 import { database } from '../Data/firebase'
 import { auth } from '../Data/firebase'
-import userImg from '../../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
 
 export const createChannel = async function (
   channelName: string,
@@ -40,7 +39,7 @@ export const createChannel = async function (
 }
 
 export const sendMessage = async function (message: string, channelId: string) {
-  if (message.length === 0) return
+  if (message.trim().length === 0) return
   const channelRef = doc(database, 'channels', channelId)
 
   await updateDoc(channelRef, {
@@ -57,5 +56,4 @@ export const sendMessage = async function (message: string, channelId: string) {
       date: Date.now(),
     }),
   })
-  console.log('message sent')
 }

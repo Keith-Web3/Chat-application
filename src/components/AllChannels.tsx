@@ -70,7 +70,13 @@ const AllChannels: React.FC<Props> = function ({
       <div className="container">
         <label htmlFor="search">
           <img src={searchIcon} alt="search" />
-          <input type="text" id="search" name="search" placeholder="search" />
+          <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="search"
+            autoComplete="off"
+          />
         </label>
         <div className="channels-container">
           {channels.map(

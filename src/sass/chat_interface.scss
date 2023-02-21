@@ -49,6 +49,12 @@
     .container {
       padding: $spacer;
       position: relative;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      height: calc(100% - 56px);
+      @media (max-width: 700px) {
+        height: calc(100vh - 56px);
+      }
 
       &::after {
         content: '';
@@ -64,9 +70,6 @@
         margin-inline: auto;
       }
 
-      .messages-container {
-        min-height: calc(100dvh - 52px);
-      }
       .message-input {
         display: flex;
         padding: 0.5em 0.5em 0.5em 1em;

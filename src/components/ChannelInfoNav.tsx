@@ -22,19 +22,11 @@ interface NavBarProps {
   isNavOpen: boolean
 }
 
-const handleNavToggle = function () {
-  const nav = document.querySelector('.nav')! as HTMLDivElement
-
-  nav.classList.toggle('active')
-}
-
 const ChannelInfoNav: React.FC<NavBarProps> = function ({
   channelInfo,
   isNavOpen,
 }) {
-  const params = useParams()
   const navigate = useNavigate()
-  console.log(channelInfo)
 
   return (
     <div className={`channel-info-nav nav ${isNavOpen ? 'active' : ''}`}>

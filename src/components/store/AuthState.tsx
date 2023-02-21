@@ -74,6 +74,21 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
           const user = response.user
 
           dispatch(userState.actions.login({ user, navigateFn }))
+          const channel = doc(
+            database,
+            'channels',
+            '16A4w32PivaHAasvXbflX1676971533389'
+          )
+          ;(async () => {
+            await updateDoc(channel, {
+              members: arrayUnion({
+                id: user.uid,
+                photoURL: user.photoURL,
+                name: user.displayName,
+                email: user.email,
+              }),
+            })
+          })()
           break
         }
         case 'EMAILANDPASSWORDLOGIN': {
@@ -94,8 +109,22 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
             password!
           )
           const user = response.user
-
+          const channel = doc(
+            database,
+            'channels',
+            '16A4w32PivaHAasvXbflX1676971533389'
+          )
           dispatch(userState.actions.login({ user, navigateFn }))
+          ;(async () => {
+            await updateDoc(channel, {
+              members: arrayUnion({
+                id: user.uid,
+                photoURL: user.photoURL,
+                name: user.displayName,
+                email: user.email,
+              }),
+            })
+          })()
         }
       }
     } catch (err: any) {

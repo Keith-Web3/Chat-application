@@ -6,7 +6,7 @@ body {
   scroll-behavior: smooth;
 }
 #modal-root {
-  position: absolute;
+  position: fixed;
   inset: 0 0 auto 0;
   height: 100vh;
   z-index: 4;
