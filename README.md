@@ -42,16 +42,16 @@ To run the application, use the following command:
 npm run dev
 ```
 This will start the application in development mode at http://localhost:3000. Open this URL in your web browser to access the chat application.
-Features
+## Features
 The chat application supports the following features:
 
-## Private Messaging
+### Private Messaging
 Users can send private messages to each other by creating channels with themselves as the only users. The private messaging feature is implemented using Firebase for real-time communication.
 
-## Public Channels
+### Public Channels
 Users can create and join public channels. They can send messages to the entire channel, and other users in the channel can see those messages in real-time.
 
-## Video Calls
+### Video Calls
 Users can initiate video calls with each other. The video call feature is implemented using WebRTC, which allows for real-time communication between peers.
 
 ## Technologies Used
