@@ -62,6 +62,10 @@ const userState = createSlice({
     setInviteId(state, action: PayloadAction<{ inviteId: string }>) {
       state.inviteId = action.payload.inviteId
     },
+    logout(state) {
+      state.user = null
+      state.isLoggedIn = false
+    },
   },
 })
 

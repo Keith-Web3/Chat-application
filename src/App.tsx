@@ -93,7 +93,11 @@ const App: React.FC = function () {
           <Route
             path=":name"
             element={
-              <ChannelInfoNav isNavOpen={isNavOpen} channelInfo={channelInfo} />
+              <ChannelInfoNav
+                isNavOpen={isNavOpen}
+                channelInfo={channelInfo}
+                channelDispatch={dispatchFn}
+              />
             }
           />
           <Route

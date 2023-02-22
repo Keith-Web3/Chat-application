@@ -22,11 +22,27 @@ interface NavBarProps {
     channelMessages: any[]
   }
   isNavOpen: boolean
+  channelDispatch: React.Dispatch<{
+    type: string
+    payload: {
+      channelName: string
+      channelDesc: string
+      channelId: string
+      channelMembers: {
+        id: string
+        photoURL: string
+        name: string
+        email: string
+      }[]
+      channelMessages: any[]
+    }
+  }>
 }
 
 const ChannelInfoNav: React.FC<NavBarProps> = function ({
   channelInfo,
   isNavOpen,
+  channelDispatch,
 }) {
   const navigate = useNavigate()
 
@@ -54,7 +70,10 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
           ))}
         </div>
       </div>
-      <User channelId={channelInfo.channelId} />
+      <User
+        channelId={channelInfo.channelId}
+        channelDispatch={channelDispatch}
+      />
     </div>
   )
 }

@@ -117,7 +117,7 @@ const AllChannels: React.FC<Props> = function ({
           )}
         </div>
       </div>
-      <User channelId={channelId} />
+      <User channelId={channelId} channelDispatch={channelDispatch} />
     </div>
   )
 }

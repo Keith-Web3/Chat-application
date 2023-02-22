@@ -8,7 +8,26 @@ import downArrow from '../assets/angle-down-solid.svg'
 import '../sass/user.scss'
 import DropDown from './UI/DropDown'
 
-const User: React.FC<{ channelId: string }> = function ({ channelId }) {
+interface Props {
+  channelId: string
+  channelDispatch: React.Dispatch<{
+    type: string
+    payload: {
+      channelName: string
+      channelDesc: string
+      channelId: string
+      channelMembers: {
+        id: string
+        photoURL: string
+        name: string
+        email: string
+      }[]
+      channelMessages: any[]
+    }
+  }>
+}
+
+const User: React.FC<Props> = function ({ channelId, channelDispatch }) {
   const user = useSelector(
     (state: { user: any; isLoggedIn: boolean }) => state.user
   )
@@ -41,7 +60,13 @@ const User: React.FC<{ channelId: string }> = function ({ channelId }) {
         animate={{ rotate: isDropDownOpen ? '180deg' : '0' }}
       />
       <AnimatePresence>
-        {isDropDownOpen && <DropDown key={nanoid()} channelId={channelId} />}
+        {isDropDownOpen && (
+          <DropDown
+            key={nanoid()}
+            channelId={channelId}
+            channelDispatch={channelDispatch}
+          />
+        )}
       </AnimatePresence>
     </div>
   )

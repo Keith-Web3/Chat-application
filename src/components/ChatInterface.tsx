@@ -15,7 +15,6 @@ import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
 import Modal from './UI/Modal'
-import copyImg from '../assets/copy-solid.svg'
 import { database } from './Data/firebase'
 
 interface ChatInterfaceProps {
