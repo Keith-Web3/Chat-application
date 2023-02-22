@@ -7,7 +7,6 @@ import React, {
 } from 'react'
 import ReactDOM from 'react-dom'
 import { Outlet } from 'react-router-dom'
-import { nanoid } from 'nanoid'
 import { onSnapshot, collection } from 'firebase/firestore'
 
 import { sendMessage } from './Utils/chatFunctions'
@@ -78,9 +77,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       })
       setAllMessages(messages)
       if (messageRef.current) messageRef.current!.value = ''
-      window.scrollTo(0, document.body.scrollHeight)
     })
   }, [channelInfo.channelId])
+
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight + 52)
+  }, [allMessages.length])
 
   const generalNavClose = function (e: MouseEvent<HTMLElement>) {
     if (
@@ -103,23 +105,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
-          <div
-            className="copy-link"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `https://astounding-choux-c5148e.netlify.app/join/:${channelInfo.channelId}`
-              )
-              alert('Invite link copied to clipboard!')
-            }}
-          >
-            <p>Invite Link</p>
-            <img src={copyImg} alt="copy" />
-          </div>
         </header>
         <div className="main-container container">
           <div className="messages-container">
-            {allMessages.map(data => (
-              <MemberMessage key={nanoid()} {...data} />
+            {allMessages.map((data, idx) => (
+              <MemberMessage key={idx} {...data} />
             ))}
           </div>
           <label htmlFor="message" className="message-input">

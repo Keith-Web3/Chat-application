@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 
 import '../sass/member_message.scss'
 import imgU from '../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
@@ -43,14 +44,18 @@ const MemberMessage: React.FC<MemberMessageProp> = function ({
     day = new Intl.DateTimeFormat('en-GB').format(modifiedDate)
   }
   return (
-    <div className="member-message">
+    <motion.div
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      className="member-message"
+    >
       <img src={img} alt={name} />
       <div className="header">
         <p className="name">{name}</p>
         <p className="date">{`${day}, ${time}`}</p>
       </div>
       <p className="message">{message}</p>
-    </div>
+    </motion.div>
   )
 }
 

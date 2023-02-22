@@ -12,12 +12,14 @@ interface NavBarProps {
   channelInfo: {
     channelName: string
     channelDesc: string
+    channelId: string
     channelMembers: {
       id: string
       photoURL: string
       name: string
       email: string
     }[]
+    channelMessages: any[]
   }
   isNavOpen: boolean
 }
@@ -52,7 +54,7 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
           ))}
         </div>
       </div>
-      <User />
+      <User channelId={channelInfo.channelId} />
     </div>
   )
 }

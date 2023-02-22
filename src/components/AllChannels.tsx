@@ -11,6 +11,7 @@ import { database, auth } from './Data/firebase'
 
 interface Props {
   isNavOpen: boolean
+  channelId: string
   setIsModalOpen: Function
   channelDispatch: React.Dispatch<{
     type: string
@@ -31,6 +32,7 @@ interface Props {
 
 const AllChannels: React.FC<Props> = function ({
   isNavOpen,
+  channelId,
   setIsModalOpen,
   channelDispatch,
 }) {
@@ -115,7 +117,7 @@ const AllChannels: React.FC<Props> = function ({
           )}
         </div>
       </div>
-      <User />
+      <User channelId={channelId} />
     </div>
   )
 }

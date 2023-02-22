@@ -1,34 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { nanoid } from 'nanoid'
 
-import { auth } from './Data/firebase'
 import userImg from '../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
-import logoutBtn from '../assets/arrow-right-from-bracket-solid.svg'
+import downArrow from '../assets/angle-down-solid.svg'
 import '../sass/user.scss'
+import DropDown from './UI/DropDown'
 
-const User: React.FC = function () {
+const User: React.FC<{ channelId: string }> = function ({ channelId }) {
   const user = useSelector(
     (state: { user: any; isLoggedIn: boolean }) => state.user
   )
-  const navigate = useNavigate()
+  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false)
 
   const name = user.displayName || user.email.slice(0, user.email.indexOf('@'))
   const profileImg = user.photoURL || userImg
-  const signOutHandler = function () {
-    signOut(auth)
-    navigate('/signup')
-  }
+
+  document.body.addEventListener('click', (e: MouseEvent) => {
+    if (
+      !(
+        (e.target as HTMLElement)!.closest('.down') ||
+        (e.target as HTMLElement)!.closest('.drop-down')
+      )
+    )
+      setIsDropDownOpen(false)
+  })
 
   return (
     <div className="user">
       <img src={profileImg} alt="profile" />
       <p className="name">{name}</p>
-      <div className="child" onClick={signOutHandler}>
-        <p>Logout</p>
-        <img src={logoutBtn} alt="logout" />
-      </div>
+      <motion.img
+        className="down"
+        onClick={() => {
+          setIsDropDownOpen(prev => !prev)
+        }}
+        src={downArrow}
+        alt="open"
+        animate={{ rotate: isDropDownOpen ? '180deg' : '0' }}
+      />
+      <AnimatePresence>
+        {isDropDownOpen && <DropDown key={nanoid()} channelId={channelId} />}
+      </AnimatePresence>
     </div>
   )
 }

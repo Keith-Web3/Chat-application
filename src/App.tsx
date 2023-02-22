@@ -102,6 +102,7 @@ const App: React.FC = function () {
               <AllChannels
                 isNavOpen={isNavOpen}
                 setIsModalOpen={setIsModalOpen}
+                channelId={channelInfo.channelId}
                 channelDispatch={dispatchFn}
               />
             }

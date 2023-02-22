@@ -16,21 +16,16 @@
     width: 45px;
     aspect-ratio: 1 / 1;
     border-radius: 7px;
+
+    &.down {
+      width: 1rem;
+      aspect-ratio: unset;
+      border-radius: unset;
+      margin-left: auto;
+      cursor: pointer;
+    }
   }
   .name {
     text-transform: uppercase;
-  }
-  .child {
-    display: flex;
-    align-items: center;
-    gap: $spacer;
-    color: $red;
-    font-weight: 600;
-    margin-left: auto;
-    cursor: pointer;
-
-    img {
-      width: 25px;
-    }
   }
 }
