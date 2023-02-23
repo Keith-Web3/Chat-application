@@ -160,7 +160,6 @@ const CallInterface: React.FC = function () {
 
     if (videoTrack?.enabled) {
       videoTrack.enabled = false
-      videoTrack.stop()
     } else {
       videoTrack.enabled = true
     }
@@ -172,7 +171,6 @@ const CallInterface: React.FC = function () {
 
     if (audioTrack?.enabled) {
       audioTrack.enabled = false
-      audioTrack.stop()
     } else {
       audioTrack.enabled = true
     }
