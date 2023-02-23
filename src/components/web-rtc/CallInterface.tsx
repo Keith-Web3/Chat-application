@@ -63,6 +63,9 @@ const CallInterface: React.FC = function () {
     channel = client.createChannel('main8')
     await channel.join()
     channel.on('MemberJoined', handleUserJoined)
+    channel.on('MemberLeft', () => {
+      userTwo.current!.style.display = 'none'
+    })
     client.on('MessageFromPeer', handleMessageFromPeer)
 
     localStream = await navigator.mediaDevices.getUserMedia({
@@ -78,6 +81,7 @@ const CallInterface: React.FC = function () {
     remoteStream = new MediaStream()
 
     userTwo.current!.srcObject = remoteStream
+    userTwo.current!.style.display = 'block'
 
     if (!localStream) {
       localStream = await navigator.mediaDevices.getUserMedia({
@@ -141,6 +145,12 @@ const CallInterface: React.FC = function () {
       peerConnection.setRemoteDescription(answer)
     }
   }
+  const leaveChannel = async function () {
+    await channel.leave()
+    await client.logout()
+  }
+
+  window.addEventListener('beforeunload', leaveChannel)
 
   useEffect(() => {
     init()
@@ -156,7 +166,7 @@ const CallInterface: React.FC = function () {
           playsInline
         ></video>
         <video
-          className="video-player"
+          className="video-player user-two"
           ref={userTwo}
           autoPlay
           playsInline
