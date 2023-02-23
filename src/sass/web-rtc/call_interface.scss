@@ -7,10 +7,15 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2em;
+
+    .user-two {
+      display: none;
+    }
   }
   .video-player {
     width: 100%;
     background-color: #000;
     height: 300px;
+    transform: scaleX(-1);
   }
 }
