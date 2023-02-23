@@ -57,11 +57,11 @@ Users can initiate video calls with each other. The video call feature is implem
 ## Technologies Used
 The following technologies were used to build this chat application:
 
-* Vite: a build tool that provides fast and efficient development builds *
-* React: a JavaScript library for building user interfaces *
-* TypeScript: a typed superset of JavaScript *
-* Firebase: a mobile and web application development platform that provides backend services for real-time applications *
-* WebRTC: a set of JavaScript APIs for real-time communication between peers *
+* Vite: a build tool that provides fast and efficient development builds
+* React: a JavaScript library for building user interfaces
+* TypeScript: a typed superset of JavaScript
+* Firebase: a mobile and web application development platform that provides backend services for real-time applications
+* WebRTC: a set of JavaScript APIs for real-time communication between peers
 ## Testing
 This application does not currently have any tests. If you would like to contribute tests, please submit a pull request.
 
