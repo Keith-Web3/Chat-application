@@ -1,0 +1,16 @@
+@use '../variables' as *;
+
+.call-interface {
+  padding: $spacer;
+
+  #videos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+  }
+  .video-player {
+    width: 100%;
+    background-color: #000;
+    height: 300px;
+  }
+}
