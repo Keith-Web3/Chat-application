@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import AgoraRTM, { RtmClient, RtmChannel, RtmMessage } from 'agora-rtm-sdk'
+import { useNavigate } from 'react-router-dom'
 
 import { auth } from '../Data/firebase'
+import cameraBtn from '../../assets/video-solid.svg'
+import microphone from '../../assets/microphone-solid.svg'
+import phone from '../../assets/phone-solid.svg'
 import '../../sass/web-rtc/call_interface.scss'
 
 const CallInterface: React.FC = function () {
@@ -70,7 +74,7 @@ const CallInterface: React.FC = function () {
 
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: false,
+      audio: true,
     })
 
     userOne.current!.srcObject = localStream
@@ -86,7 +90,7 @@ const CallInterface: React.FC = function () {
     if (!localStream) {
       localStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false,
+        audio: true,
       })
 
       userOne.current!.srcObject = localStream
@@ -149,12 +153,37 @@ const CallInterface: React.FC = function () {
     await channel.leave()
     await client.logout()
   }
+  const toggleCamera = async function () {
+    const videoTrack = localStream
+      .getTracks()
+      .find(track => track.kind === 'video')!
+
+    if (videoTrack?.enabled) {
+      videoTrack.enabled = false
+      videoTrack.stop()
+    } else {
+      videoTrack.enabled = true
+    }
+  }
+  const toggleMic = async function () {
+    const audioTrack = localStream
+      .getTracks()
+      .find(track => track.kind === 'audio')!
+
+    if (audioTrack?.enabled) {
+      audioTrack.enabled = false
+      audioTrack.stop()
+    } else {
+      audioTrack.enabled = true
+    }
+  }
 
   window.addEventListener('beforeunload', leaveChannel)
 
   useEffect(() => {
     init()
   }, [])
+  const navigate = useNavigate()
 
   return (
     <div className="call-interface">
@@ -171,6 +200,27 @@ const CallInterface: React.FC = function () {
           autoPlay
           playsInline
         ></video>
+      </div>
+      <div id="controls">
+        <div
+          className="control-container"
+          id="camera-btn"
+          onClick={toggleCamera}
+        >
+          <img src={cameraBtn} alt="camera" />
+        </div>
+        <div className="control-container" id="mic-btn" onClick={toggleMic}>
+          <img src={microphone} alt="microphone" />
+        </div>
+        <div
+          className="control-container"
+          id="leave-btn"
+          onClick={() => {
+            navigate('/channels')
+          }}
+        >
+          <img src={phone} alt="leave" />
+        </div>
       </div>
     </div>
   )

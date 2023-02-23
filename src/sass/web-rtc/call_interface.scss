@@ -18,4 +18,31 @@
     height: 300px;
     transform: scaleX(-1);
   }
+
+  #controls {
+    position: fixed;
+    inset: auto auto 20px 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: $spacer;
+
+    .control-container {
+      background-color: rgba(#b366f9, 0.9);
+      padding: 20px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      width: max-content;
+
+      &#leave-btn {
+        background-color: #ff5050;
+      }
+      img {
+        width: 30px;
+        aspect-ratio: 1 / 1;
+      }
+    }
+  }
 }
