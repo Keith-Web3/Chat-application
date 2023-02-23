@@ -6,16 +6,17 @@ import React, {
   KeyboardEventHandler,
 } from 'react'
 import ReactDOM from 'react-dom'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { onSnapshot, collection } from 'firebase/firestore'
 
 import { sendMessage } from './Utils/chatFunctions'
-import '../sass/chat_interface.scss'
+import { database } from './Data/firebase'
 import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
 import Modal from './UI/Modal'
-import { database } from './Data/firebase'
+import videoCallIcon from '../assets/video_call_FILL0_wght400_GRAD0_opsz48.svg'
+import '../sass/chat_interface.scss'
 
 interface ChatInterfaceProps {
   channelInfo: {
@@ -41,6 +42,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   setIsNavOpen,
   setIsModalOpen,
 }) {
+  const navigate = useNavigate()
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
@@ -104,6 +106,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
+          <img
+            className="video-call"
+            src={videoCallIcon}
+            alt="video call"
+            onClick={() =>
+              navigate('/call/:16A4w32PivaHAasvXbflX1676971533389')
+            }
+          />
         </header>
         <div className="main-container container">
           <div className="messages-container">

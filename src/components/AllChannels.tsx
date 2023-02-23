@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, FormEventHandler } from 'react'
 import { nanoid } from 'nanoid'
 import { collection, onSnapshot } from 'firebase/firestore'
 
@@ -30,13 +30,38 @@ interface Props {
   }>
 }
 
+interface Channels {
+  channelName: string
+  channelDescription: string
+  id: string
+  members: {
+    id: string
+    photoURL: string
+    name: string
+    email: string
+  }[]
+  messages: any[]
+}
+
 const AllChannels: React.FC<Props> = function ({
   isNavOpen,
   channelId,
   setIsModalOpen,
   channelDispatch,
 }) {
-  const [channels, setChannels] = useState<{ [props: string]: any }>([])
+  const [channels, setChannels] = useState<Channels[]>([])
+  const [filteredChannels, setFilteredChannels] = useState(channels)
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  const onChannelSearch: FormEventHandler<HTMLInputElement> = function (e) {
+    setFilteredChannels(
+      channels.filter(channel => {
+        return channel.channelName
+          .toLowerCase()
+          .includes((e.target as HTMLInputElement)!.value.toLowerCase().trim())
+      })
+    )
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -53,6 +78,13 @@ const AllChannels: React.FC<Props> = function ({
               ) + 1
           )
           setChannels(channels)
+          setFilteredChannels(
+            channels.filter(channel => {
+              return channel.channelName
+                .toLowerCase()
+                .includes(searchRef.current!.value.toLowerCase().trim())
+            })
+          )
           setIsModalOpen(false)
         })
       } catch (err) {
@@ -76,12 +108,14 @@ const AllChannels: React.FC<Props> = function ({
             type="text"
             id="search"
             name="search"
+            ref={searchRef}
+            onInput={onChannelSearch}
             placeholder="search"
             autoComplete="off"
           />
         </label>
         <div className="channels-container">
-          {channels.map(
+          {filteredChannels.map(
             (el: {
               channelName: string
               channelDescription: string

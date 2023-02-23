@@ -51,9 +51,6 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
       <div className="header">
         <img src={backBtn} alt="back" onClick={() => navigate('/channels')} />
         <p>All Channels</p>
-        <div className="img-container">
-          <img src={cancelBtn} alt="cancel" />
-        </div>
       </div>
       <div className="container">
         <p className="name">{channelInfo.channelName}</p>

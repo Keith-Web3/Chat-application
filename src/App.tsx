@@ -13,6 +13,7 @@ import ChatInterface from './components/ChatInterface'
 import AllChannels from './components/AllChannels'
 import SignUp from './components/Auth/SignUp'
 import JoinChannel from './components/JoinChannel'
+import CallInterface from './components/web-rtc/CallInterface'
 
 interface reducer {
   channelName: string
@@ -79,39 +80,42 @@ const App: React.FC = function () {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/join/:channelId" element={<JoinChannel />} />
       {user.user && (
-        <Route
-          path="/"
-          element={
-            <ChatInterface
-              isModalOpen={isModalOpen}
-              setIsNavOpen={setIsNavOpen}
-              setIsModalOpen={setIsModalOpen}
-              channelInfo={channelInfo}
-            />
-          }
-        >
+        <>
+          <Route path="/call/:channelId" element={<CallInterface />} />
           <Route
-            path=":name"
+            path="/"
             element={
-              <ChannelInfoNav
-                isNavOpen={isNavOpen}
-                channelInfo={channelInfo}
-                channelDispatch={dispatchFn}
-              />
-            }
-          />
-          <Route
-            path="channels"
-            element={
-              <AllChannels
-                isNavOpen={isNavOpen}
+              <ChatInterface
+                isModalOpen={isModalOpen}
+                setIsNavOpen={setIsNavOpen}
                 setIsModalOpen={setIsModalOpen}
-                channelId={channelInfo.channelId}
-                channelDispatch={dispatchFn}
+                channelInfo={channelInfo}
               />
             }
-          />
-        </Route>
+          >
+            <Route
+              path=":name"
+              element={
+                <ChannelInfoNav
+                  isNavOpen={isNavOpen}
+                  channelInfo={channelInfo}
+                  channelDispatch={dispatchFn}
+                />
+              }
+            />
+            <Route
+              path="channels"
+              element={
+                <AllChannels
+                  isNavOpen={isNavOpen}
+                  setIsModalOpen={setIsModalOpen}
+                  channelId={channelInfo.channelId}
+                  channelDispatch={dispatchFn}
+                />
+              }
+            />
+          </Route>
+        </>
       )}
       <Route path="*" element={<Navigate to={'/signup'} />} />
     </Routes>
