@@ -37,7 +37,7 @@ VITE_MESSAGING_SENDER_ID = "your-messaging-sender-id"
 VITE_APP_ID = "your-app-id"
 ```
 ## Setting up Agora Credentials
-Before you can use the video calling feature of the chat application, you will need to set up an Angora app and get an app ID. To do this, follow these steps:
+Before you can use the video calling feature of the chat application, you will need to set up an Agora app and get an app ID. To do this, follow these steps:
 1. Sign up for an account on the [Agora website](https://www.agora.io/en/).
 2. Create a new app by going to the [project management tab](https://console.agora.io/projects) and clicking on the create button.
 3. Once your app is created, click on the app to access the app settings.
@@ -57,7 +57,7 @@ To run the application, use the following command:
 ```html
 npm run dev
 ```
-This will start the application in development mode at http://localhost:3000. Open this URL in your web browser to access the chat application.
+This will start the application in development mode at http://localhost:5173. Open this URL in your web browser to access the chat application.
 ## Features
 The chat application supports the following features:
 
