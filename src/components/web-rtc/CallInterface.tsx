@@ -200,7 +200,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       .then(res => res.json())
       .then((data: { token: string }) => (token = data.token))
       .then(() => init())
-      .catch(err => console.log('Error:', err.message))
+      .catch(err => alert('Error:' + err.message))
 
     userOne.current!.muted = true
 
