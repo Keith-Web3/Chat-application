@@ -52,7 +52,7 @@ Users can send private messages to each other by creating channels with themselv
 Users can create and join public channels. They can send messages to the entire channel, and other users in the channel can see those messages in real-time.
 
 ### Video Calls
-Users can initiate video calls with each other. The video call feature is implemented using WebRTC, which allows for real-time communication between peers.
+Users can initiate video calls with each other. This feature is only supported on private messsaging channels i.e channels with only two users as the video-calling feature is implemented using WebRTC, which only supports peer-to-peer connection.
 
 ## Technologies Used
 The following technologies were used to build this chat application:
