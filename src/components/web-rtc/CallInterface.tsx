@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { MouseEvent, useEffect, useRef } from 'react'
 import AgoraRTM, { RtmClient, RtmChannel, RtmMessage } from 'agora-rtm-sdk'
 import { useNavigate } from 'react-router-dom'
+import { nanoid } from 'nanoid'
 
 import { auth } from '../Data/firebase'
 import cameraBtn from '../../assets/video-solid.svg'
@@ -8,12 +9,14 @@ import microphone from '../../assets/microphone-solid.svg'
 import phone from '../../assets/phone-solid.svg'
 import '../../sass/web-rtc/call_interface.scss'
 
-const CallInterface: React.FC = function () {
+const CallInterface: React.FC<{ channelId: string }> = function ({
+  channelId,
+}) {
   const userOne = useRef<HTMLVideoElement>(null)
   const userTwo = useRef<HTMLVideoElement>(null)
 
   const appId = import.meta.env.VITE_AGORA_APP_ID
-  const token = ''
+  let token = ''
   const uid = auth.currentUser!.uid
 
   let client: RtmClient
@@ -27,7 +30,7 @@ const CallInterface: React.FC = function () {
     iceServers: [
       {
         urls: [
-          'stun: stun1.1.google.com:19302',
+          'stun:stun1.1.google.com:19302',
           'stun:stun2.1.google.com:19302',
         ],
       },
@@ -62,30 +65,36 @@ const CallInterface: React.FC = function () {
 
   const init = async function () {
     client = AgoraRTM.createInstance(appId)
-    const res = await client.login({ uid })
+    console.log('token:', token)
+    try {
+      const res = await client.login({ uid, token })
+    } catch (err: any) {
+      console.log(err.message)
+    }
 
     client.on('ConnectionStateChanged', async (newState, reason) => {
       console.log(
         `RTM client connection state changed to ${newState} with reason ${reason}`
       )
+      if (newState === 'CONNECTED') {
+        channel = client.createChannel(channelId)
+        await channel.join()
+        channel.on('MemberJoined', handleUserJoined)
+        channel.on('MemberLeft', () => {
+          userTwo.current!.style.display = 'none'
+        })
+        client.on('MessageFromPeer', handleMessageFromPeer)
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        })
+        userOne.current!.srcObject = localStream
+      }
     })
-    channel = client.createChannel('main10')
-    await channel.join()
-    channel.on('MemberJoined', handleUserJoined)
-    channel.on('MemberLeft', () => {
-      userTwo.current!.style.display = 'none'
-    })
-    client.on('MessageFromPeer', handleMessageFromPeer)
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    })
-
-    userOne.current!.srcObject = localStream
   }
 
   const createPeerConnection = async function (memberId: string) {
-    peerConnection = new RTCPeerConnection()
+    peerConnection = new RTCPeerConnection(servers)
     remoteStream = new MediaStream()
 
     userTwo.current!.srcObject = remoteStream
@@ -154,45 +163,54 @@ const CallInterface: React.FC = function () {
     }
   }
   const leaveChannel = async function () {
-    await channel.leave()
+    await channel?.leave()
     await client.logout()
   }
-  const toggleCamera = async function () {
+  const toggleCamera = async function (e: MouseEvent<HTMLDivElement>) {
     const videoTrack = localStream
-      .getTracks()
+      ?.getTracks()
       .find(track => track.kind === 'video')!
 
     if (videoTrack?.enabled) {
       videoTrack.enabled = false
+      e.currentTarget.style.backgroundColor = '#eb5757'
     } else {
       videoTrack.enabled = true
+      e.currentTarget.style.backgroundColor = 'rgb(179, 102, 249, 0.9)'
     }
   }
-  const toggleMic = async function () {
+  const toggleMic = async function (e: MouseEvent<HTMLDivElement>) {
     const audioTrack = localStream
-      .getTracks()
+      ?.getTracks()
       .find(track => track.kind === 'audio')!
 
     if (audioTrack?.enabled) {
       audioTrack.enabled = false
+      e.currentTarget.style.backgroundColor = '#eb5757'
     } else {
       audioTrack.enabled = true
+      e.currentTarget.style.backgroundColor = 'rgb(179, 102, 249, 0.9)'
     }
   }
 
   window.addEventListener('beforeunload', leaveChannel)
 
   useEffect(() => {
-    init()
+    fetch(`http://localhost:8080/access_token?uid=${uid}`)
+      .then(res => res.json())
+      .then((data: { token: string }) => (token = data.token))
+      .then(() => init())
+      .catch(err => console.log('Error:', err.message))
+
+    userOne.current!.muted = true
 
     return () => {
-      console.log('running')
       const tracks = localStream?.getTracks()
       if (tracks) {
-        console.log('works')
         tracks.forEach(track => {
           track.stop()
         })
+        leaveChannel()
       }
     }
   }, [])
@@ -202,7 +220,7 @@ const CallInterface: React.FC = function () {
     <div className="call-interface">
       <div id="videos">
         <video
-          className="video-player"
+          className="video-player user-one"
           ref={userOne}
           autoPlay
           playsInline

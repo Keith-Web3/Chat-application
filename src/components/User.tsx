@@ -47,7 +47,7 @@ const User: React.FC<Props> = function ({ channelId, channelDispatch }) {
   })
 
   return (
-    <div className="user">
+    <div className="user" title={name}>
       <img src={profileImg} alt="profile" />
       <p className="name">{name}</p>
       <motion.img

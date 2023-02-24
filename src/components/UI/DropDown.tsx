@@ -39,7 +39,7 @@ const DropDown: React.FC<Props> = function ({ channelId, channelDispatch }) {
 
   const signOutHandler = function () {
     signOut(auth)
-    navigate('/signup')
+    navigate('/login')
     dispatch(actions.logout())
   }
   const exitChannelHandler = async function () {
@@ -65,6 +65,7 @@ const DropDown: React.FC<Props> = function ({ channelId, channelDispatch }) {
         channelMessages: [],
       },
     })
+    navigate('/channels')
   }
 
   return (

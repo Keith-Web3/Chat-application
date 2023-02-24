@@ -111,9 +111,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               className="video-call"
               src={videoCallIcon}
               alt="video call"
-              onClick={() =>
-                navigate('/call/:16A4w32PivaHAasvXbflX1676971533389')
-              }
+              onClick={() => navigate('/call')}
             />
           )}
         </header>

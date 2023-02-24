@@ -2,7 +2,6 @@
 
 .user {
   display: flex;
-  flex-wrap: wrap;
   gap: $spacer;
   align-items: center;
   padding: $spacer;
@@ -27,5 +26,9 @@
   }
   .name {
     text-transform: uppercase;
+    width: calc(100% - (($spacer * 4) + 45px + 1rem));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

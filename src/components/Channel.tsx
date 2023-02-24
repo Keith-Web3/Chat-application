@@ -11,7 +11,7 @@ const Channel: React.FC<{
 
   const abbreviatedName = name
     .split(' ')
-    .map(el => el[0].toUpperCase())
+    .map(el => el[0]?.toUpperCase())
     .join('')
     .slice(0, 2)
 

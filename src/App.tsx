@@ -81,7 +81,10 @@ const App: React.FC = function () {
       <Route path="/join/:channelId" element={<JoinChannel />} />
       {user.user && (
         <>
-          <Route path="/call/:channelId" element={<CallInterface />} />
+          <Route
+            path="/call"
+            element={<CallInterface channelId={channelInfo.channelId} />}
+          />
           <Route
             path="/"
             element={
@@ -117,7 +120,7 @@ const App: React.FC = function () {
           </Route>
         </>
       )}
-      <Route path="*" element={<Navigate to={'/signup'} />} />
+      <Route path="*" element={<Navigate to={'/login'} />} />
     </Routes>
   )
 }
