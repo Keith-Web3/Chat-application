@@ -62,16 +62,20 @@ const CallInterface: React.FC = function () {
 
   const init = async function () {
     client = AgoraRTM.createInstance(appId)
-    await client.login({ uid })
+    const res = await client.login({ uid })
 
-    channel = client.createChannel('main8')
+    client.on('ConnectionStateChanged', async (newState, reason) => {
+      console.log(
+        `RTM client connection state changed to ${newState} with reason ${reason}`
+      )
+    })
+    channel = client.createChannel('main10')
     await channel.join()
     channel.on('MemberJoined', handleUserJoined)
     channel.on('MemberLeft', () => {
       userTwo.current!.style.display = 'none'
     })
     client.on('MessageFromPeer', handleMessageFromPeer)
-
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
@@ -180,6 +184,17 @@ const CallInterface: React.FC = function () {
 
   useEffect(() => {
     init()
+
+    return () => {
+      console.log('running')
+      const tracks = localStream?.getTracks()
+      if (tracks) {
+        console.log('works')
+        tracks.forEach(track => {
+          track.stop()
+        })
+      }
+    }
   }, [])
   const navigate = useNavigate()
 
@@ -214,7 +229,8 @@ const CallInterface: React.FC = function () {
           className="control-container"
           id="leave-btn"
           onClick={() => {
-            navigate('/channels')
+            leaveChannel()
+            navigate('/channels', { replace: true })
           }}
         >
           <img src={phone} alt="leave" />

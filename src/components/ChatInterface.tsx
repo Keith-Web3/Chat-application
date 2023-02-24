@@ -106,14 +106,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
-          <img
-            className="video-call"
-            src={videoCallIcon}
-            alt="video call"
-            onClick={() =>
-              navigate('/call/:16A4w32PivaHAasvXbflX1676971533389')
-            }
-          />
+          {channelInfo.channelMembers.length === 2 && (
+            <img
+              className="video-call"
+              src={videoCallIcon}
+              alt="video call"
+              onClick={() =>
+                navigate('/call/:16A4w32PivaHAasvXbflX1676971533389')
+              }
+            />
+          )}
         </header>
         <div className="main-container container">
           <div className="messages-container">
