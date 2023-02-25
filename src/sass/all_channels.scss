@@ -39,6 +39,12 @@
     background-color: $dark-200;
     height: max-content;
 
+    .close-btn {
+      left: 50%;
+      right: auto;
+      transform: translate(-50%, -50%);
+    }
+
     .img-container {
       background-color: $dark-100;
       display: grid;

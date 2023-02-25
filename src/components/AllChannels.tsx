@@ -2,14 +2,16 @@ import React, { useEffect, useState, useRef, FormEventHandler } from 'react'
 import { nanoid } from 'nanoid'
 import { collection, onSnapshot } from 'firebase/firestore'
 
+import { database, auth } from './Data/firebase'
 import plus from '../assets/plus-solid.svg'
 import searchIcon from '../assets/magnifying-glass-solid.svg'
 import Channel from './Channel'
-import '../sass/all_channels.scss'
 import User from './User'
-import { database, auth } from './Data/firebase'
+import closeBtn from '../assets/xmark-solid.svg'
+import '../sass/all_channels.scss'
 
 interface Props {
+  setIsNavOpen: Function
   isNavOpen: boolean
   channelId: string
   setIsModalOpen: Function
@@ -48,6 +50,7 @@ const AllChannels: React.FC<Props> = function ({
   channelId,
   setIsModalOpen,
   channelDispatch,
+  setIsNavOpen,
 }) {
   const [channels, setChannels] = useState<Channels[]>([])
   const [filteredChannels, setFilteredChannels] = useState(channels)
@@ -99,6 +102,9 @@ const AllChannels: React.FC<Props> = function ({
         <p>Channels</p>
         <div className="img-container" onClick={() => setIsModalOpen(true)}>
           <img src={plus} alt="add channel" />
+        </div>
+        <div className="close-btn" onClick={() => setIsNavOpen(false)}>
+          <img src={closeBtn} alt="close" />
         </div>
       </div>
       <div className="container">

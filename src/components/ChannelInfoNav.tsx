@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 
 import backBtn from '../assets/chevron-left-solid.svg'
@@ -9,6 +9,7 @@ import cancelBtn from '../assets/xmark-solid.svg'
 import User from './User'
 
 interface NavBarProps {
+  setIsNavOpen: Function
   channelInfo: {
     channelName: string
     channelDesc: string
@@ -43,6 +44,7 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
   channelInfo,
   isNavOpen,
   channelDispatch,
+  setIsNavOpen,
 }) {
   const navigate = useNavigate()
 
@@ -51,6 +53,9 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
       <div className="header">
         <img src={backBtn} alt="back" onClick={() => navigate('/channels')} />
         <p>All Channels</p>
+        <div className="close-btn" onClick={() => setIsNavOpen(false)}>
+          <img src={cancelBtn} alt="close" />
+        </div>
       </div>
       <div className="container">
         <p className="name">{channelInfo.channelName}</p>

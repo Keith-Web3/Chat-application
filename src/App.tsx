@@ -66,6 +66,7 @@ const App: React.FC = function () {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
+    setIsNavOpen(true)
   }, [])
 
   useEffect(() => {
@@ -103,6 +104,7 @@ const App: React.FC = function () {
                   isNavOpen={isNavOpen}
                   channelInfo={channelInfo}
                   channelDispatch={dispatchFn}
+                  setIsNavOpen={setIsNavOpen}
                 />
               }
             />
@@ -114,6 +116,7 @@ const App: React.FC = function () {
                   setIsModalOpen={setIsModalOpen}
                   channelId={channelInfo.channelId}
                   channelDispatch={dispatchFn}
+                  setIsNavOpen={setIsNavOpen}
                 />
               }
             />
