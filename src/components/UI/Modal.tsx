@@ -22,9 +22,22 @@ const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
       className="modal"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="container">
+      <motion.div
+        className="container"
+        initial={{ scale: 0 }}
+        animate={{
+          scale: 1,
+          transition: {
+            type: 'spring',
+            damping: 25,
+            stiffness: 500,
+            duration: 0.4,
+          },
+        }}
+      >
         <h2>New Channel</h2>
         <input type="text" placeholder="Channel name" ref={channelNameRef} />
         <textarea placeholder="Channel Description" ref={channelDescRef} />
@@ -38,7 +51,7 @@ const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
         >
           Save
         </Button>
-      </div>
+      </motion.div>
     </motion.div>
   )
 }

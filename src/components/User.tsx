@@ -57,7 +57,9 @@ const User: React.FC<Props> = function ({ channelId, channelDispatch }) {
         }}
         src={downArrow}
         alt="open"
-        animate={{ rotate: isDropDownOpen ? '180deg' : '0' }}
+        animate={{
+          rotate: isDropDownOpen ? '180deg' : '0',
+        }}
       />
       <AnimatePresence>
         {isDropDownOpen && (

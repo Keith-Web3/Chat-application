@@ -8,6 +8,7 @@ import React, {
 import ReactDOM from 'react-dom'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { onSnapshot, collection } from 'firebase/firestore'
+import { AnimatePresence } from 'framer-motion'
 
 import { sendMessage } from './Utils/chatFunctions'
 import { database } from './Data/firebase'
@@ -60,7 +61,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       }
       return `<p>${el}</p>`
     })
-    textAreaWidth.current!.style.width = messageRef.current!.scrollWidth + 'px'
+    textAreaWidth.current!.style.width = messageRef.current!.clientWidth + 'px'
     textAreaWidth.current!.innerHTML = `${text.join('')}`
     messageRef.current!.style.height =
       textAreaWidth.current!.clientHeight + 'px'
@@ -156,7 +157,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
           </label>
         </div>
         {ReactDOM.createPortal(
-          isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />,
+          <AnimatePresence>
+            {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
+          </AnimatePresence>,
           document.getElementById('modal-root') as Element
         )}
       </section>

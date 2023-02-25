@@ -1,10 +1,11 @@
 import { nanoid } from 'nanoid'
 import { useDispatch } from 'react-redux/es/exports'
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 import { signIn } from '../store/AuthState'
 import googleImg from '../../assets/google.png'
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { useNavigate } from 'react-router-dom'
 
 const SocialProfiles: React.FC = function () {
   const dispatch = useDispatch()
@@ -23,12 +24,17 @@ const SocialProfiles: React.FC = function () {
     )
   }
   return (
-    <div className="social-profiles" onClick={googleLoginHandler}>
+    <motion.div
+      className="social-profiles"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={googleLoginHandler}
+    >
       {[googleImg].map((img, idx) => (
         <img src={img} alt="social" key={nanoid()} />
       ))}
       <p>Sign in with Google</p>
-    </div>
+    </motion.div>
   )
 }
 

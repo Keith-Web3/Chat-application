@@ -72,7 +72,11 @@ const DropDown: React.FC<Props> = function ({ channelId, channelDispatch }) {
     <motion.div
       className="drop-down"
       initial={{ y: 'calc(-100% + 30px)', opacity: 0 }}
-      animate={{ y: '-100%', opacity: 1 }}
+      animate={{
+        y: '-100%',
+        opacity: 1,
+        transition: { type: 'spring', damping: 20, stiffness: 500 },
+      }}
       exit={{
         y: 'calc(-100% + 30px)',
         opacity: 0,
