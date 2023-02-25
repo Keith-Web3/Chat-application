@@ -46,12 +46,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
-  const enterSubmit: KeyboardEventHandler<HTMLInputElement> = function (e) {
+  const enterSubmit: KeyboardEventHandler<HTMLTextAreaElement> = function (e) {
     if (e.key === 'Enter') {
       sendMessage(messageRef.current!.value, channelInfo.channelId)
+      textAreaWidth.current!.innerHTML = ''
     }
   }
-  const messageRef = useRef<HTMLInputElement>(null)
+  const onInput: KeyboardEventHandler<HTMLTextAreaElement> = function () {
+    const re = /\n/g
+    const text = messageRef.current!.value.split(re).map(el => {
+      if (el.trim() === '') {
+        el = 'a'
+      }
+      return `<p>${el}</p>`
+    })
+    textAreaWidth.current!.style.width = messageRef.current!.scrollWidth + 'px'
+    textAreaWidth.current!.innerHTML = `${text.join('')}`
+    messageRef.current!.style.height =
+      textAreaWidth.current!.clientHeight + 'px'
+  }
+  const messageRef = useRef<HTMLTextAreaElement>(null)
+  const textAreaWidth = useRef<HTMLDivElement>(null)
   const [allMessages, setAllMessages] = useState<
     {
       date: number
@@ -122,14 +137,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             ))}
           </div>
           <label htmlFor="message" className="message-input">
-            <input
-              type="text"
+            <textarea
               id="message"
               placeholder="Type a message here"
               autoComplete="off"
               ref={messageRef}
               onKeyDown={enterSubmit}
+              onInput={onInput}
             />
+            <div className="textarea-width" ref={textAreaWidth}></div>
             <button
               onClick={() =>
                 sendMessage(messageRef.current!.value, channelInfo.channelId)

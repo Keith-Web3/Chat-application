@@ -16,7 +16,6 @@
       padding: $spacer;
       position: sticky;
       inset: 0 0 auto 0;
-      isolation: isolate;
       background-color: $dark-100;
       z-index: 1;
       font-weight: 700;
@@ -76,12 +75,30 @@
           margin-top: $spacer * 2;
         }
 
-        input {
+        .textarea-width {
+          position: absolute;
+          inset: auto auto 0 0;
+          min-height: 33px;
+          overflow: hidden;
+          overflow-wrap: break-word;
+          z-index: -1;
+          max-height: 150px;
+          pointer-events: none;
+          opacity: 0;
+        }
+        textarea {
           width: 100%;
           border: none;
           outline: none;
           background-color: transparent;
           color: $font-gray-100;
+          resize: none;
+          height: 33px;
+          display: grid;
+
+          &::placeholder {
+            margin-block: auto;
+          }
         }
         button {
           border: none;
@@ -90,6 +107,7 @@
           padding: $spacer * 0.4;
           border-radius: 8px;
           cursor: pointer;
+          align-self: flex-end;
 
           img {
             width: 20px;
