@@ -196,7 +196,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   window.addEventListener('beforeunload', leaveChannel)
 
   useEffect(() => {
-    fetch(`http://localhost:8080/access_token?uid=${uid}`)
+    fetch(`https://chat-application-nu-one.vercel.app/?uid=${uid}`)
       .then(res => res.json())
       .then((data: { token: string }) => (token = data.token))
       .then(() => init())
