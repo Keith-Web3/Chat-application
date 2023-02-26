@@ -16,7 +16,8 @@
     place-content: center;
   }
   .name {
-    width: 100%;
+    width: min(100%, calc(370px - $spacer));
+
     text-transform: uppercase;
   }
 }

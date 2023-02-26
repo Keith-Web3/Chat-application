@@ -4,6 +4,11 @@ body {
   font-family: 'Noto Sans', 'Nunito', Verdana, Geneva, Tahoma, sans-serif;
   position: relative;
   scroll-behavior: smooth;
+
+  p {
+    overflow: hidden;
+    overflow-wrap: break-word;
+  }
 }
 #modal-root {
   position: fixed;

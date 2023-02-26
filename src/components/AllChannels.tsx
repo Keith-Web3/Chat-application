@@ -85,7 +85,7 @@ const AllChannels: React.FC<Props> = function ({
             channels.filter(channel => {
               return channel.channelName
                 .toLowerCase()
-                .includes(searchRef.current!.value.toLowerCase().trim())
+                .includes(searchRef.current?.value.toLowerCase().trim() ?? '')
             })
           )
           setIsModalOpen(false)
