@@ -47,7 +47,7 @@ const generateAccessToken = function (req, resp) {
   return resp.json({ token: token })
 }
 
-app.get('/access_token', nocache, generateAccessToken)
+app.get('/', nocache, generateAccessToken)
 
 app.listen(PORT, () => {
   console.log(APP_ID, APP_CERTIFICATE)
