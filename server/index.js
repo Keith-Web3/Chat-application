@@ -44,7 +44,7 @@ const generateAccessToken = function (req, resp) {
     privilegeExpireTime
   )
 
-  return resp.json({ token: token, appId: APP_ID, appCert: APP_CERTIFICATE })
+  return resp.json({ token: token })
 }
 
 app.get('/', nocache, generateAccessToken)
