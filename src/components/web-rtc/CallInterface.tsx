@@ -58,7 +58,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   }
 
   const handleUserJoined = async function (memberId: string) {
-    console.log('WORKS!')
     console.log('A new user joined the channel:', memberId)
     createOffer(memberId)
   }
@@ -67,6 +66,18 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     client = AgoraRTM.createInstance(appId)
     try {
       const res = await client.login({ uid, token })
+      channel = client.createChannel(channelId)
+      await channel.join()
+      channel.on('MemberJoined', handleUserJoined)
+      channel.on('MemberLeft', () => {
+        userTwo.current!.style.display = 'none'
+      })
+      client.on('MessageFromPeer', handleMessageFromPeer)
+      localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      })
+      userOne.current!.srcObject = localStream
     } catch (err: any) {
       console.log(err.message)
     }
@@ -75,20 +86,8 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       console.log(
         `RTM client connection state changed to ${newState} with reason ${reason}`
       )
-      if (newState === 'CONNECTED') {
-        channel = client.createChannel(channelId)
-        await channel.join()
-        channel.on('MemberJoined', handleUserJoined)
-        channel.on('MemberLeft', () => {
-          userTwo.current!.style.display = 'none'
-        })
-        client.on('MessageFromPeer', handleMessageFromPeer)
-        localStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        })
-        userOne.current!.srcObject = localStream
-      }
+      // if (newState === 'CONNECTED') {
+      // }
     })
   }
 
