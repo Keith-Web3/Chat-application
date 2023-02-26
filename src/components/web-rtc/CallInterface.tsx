@@ -65,7 +65,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 
   const init = async function () {
     client = AgoraRTM.createInstance(appId)
-    console.log('token:', token)
     try {
       const res = await client.login({ uid, token })
     } catch (err: any) {
