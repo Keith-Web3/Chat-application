@@ -46,11 +46,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     const parsedMessage: RtmMessage & { type: string; [prop: string]: any } =
       JSON.parse(message.text!)
     if (parsedMessage.type === 'offer') {
-      createAnswer(memberId, parsedMessage.offer)
+      await createAnswer(memberId, parsedMessage.offer)
     }
     if (parsedMessage.type === 'answer') {
-      await peerConnection.setRemoteDescription(parsedMessage.answer)
-      addAnswer(parsedMessage.answer)
+      await addAnswer(parsedMessage.answer)
     }
     if (parsedMessage.type === 'candidate') {
       console.log(
@@ -58,7 +57,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         peerConnection.currentRemoteDescription,
         peerConnection.remoteDescription
       )
-      peerConnection.addIceCandidate(parsedMessage.candidate)
+      await peerConnection.addIceCandidate(parsedMessage.candidate)
     }
     console.log('Message:', message)
     console.log(parsedMessage)
