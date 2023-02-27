@@ -59,7 +59,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         peerConnection.remoteDescription
       )
       if (peerConnection.remoteDescription) {
-        await peerConnection.addIceCandidate(parsedMessage.candidate)
+        await peerConnection.addIceCandidate(
+          new RTCIceCandidate(parsedMessage.candidate)
+        )
+        console.log('icecandidate added!')
       }
       backupCandidate = parsedMessage.candidate
     }
@@ -178,7 +181,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         peerConnection.remoteDescription
       )
       if (backupCandidate) {
-        await peerConnection.addIceCandidate(backupCandidate)
+        await peerConnection.addIceCandidate(
+          new RTCIceCandidate(backupCandidate)
+        )
+        console.log('ice-candidate added')
       }
       const answer = await peerConnection.createAnswer()
       await peerConnection.setLocalDescription(answer)
