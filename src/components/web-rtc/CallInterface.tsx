@@ -28,6 +28,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   let localStream: MediaStream
   let remoteStream: MediaStream
   let peerConnection: RTCPeerConnection
+  let backupCandidate: RTCIceCandidateInit
   const servers = {
     iceServers: [
       {
@@ -57,7 +58,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         peerConnection.currentRemoteDescription,
         peerConnection.remoteDescription
       )
-      await peerConnection.addIceCandidate(parsedMessage.candidate)
+      if (peerConnection.remoteDescription) {
+        await peerConnection.addIceCandidate(parsedMessage.candidate)
+      }
+      backupCandidate = parsedMessage.candidate
     }
     console.log('Message:', message)
     console.log(parsedMessage)
@@ -169,10 +173,13 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 
       await peerConnection.setRemoteDescription(offer)
       console.log(
-        'Remote description:',
+        'Remote description after offer:',
         peerConnection.currentRemoteDescription,
         peerConnection.remoteDescription
       )
+      if (backupCandidate) {
+        await peerConnection.addIceCandidate(backupCandidate)
+      }
       const answer = await peerConnection.createAnswer()
       await peerConnection.setLocalDescription(answer)
 
