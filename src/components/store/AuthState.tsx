@@ -20,10 +20,12 @@ const initialState: {
   user: null | { [props: string]: any }
   isLoggedIn: boolean
   inviteId: string
+  errorMessage: string
 } = {
   user: null,
   isLoggedIn: false,
   inviteId: '',
+  errorMessage: '',
 }
 
 const userState = createSlice({
@@ -65,6 +67,10 @@ const userState = createSlice({
     logout(state) {
       state.user = null
       state.isLoggedIn = false
+    },
+    resetErrorMessage(state, action) {
+      window.scrollTo(0, 0)
+      state.errorMessage = action.payload
     },
   },
 })
@@ -132,7 +138,8 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
         }
       }
     } catch (err: any) {
-      console.log(err.message)
+      dispatch(actions.resetErrorMessage(err.message))
+      console.log('Error:', err.message)
     }
   }
 }

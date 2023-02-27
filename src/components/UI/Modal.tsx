@@ -1,7 +1,9 @@
 import React, { useRef } from 'react'
 import { motion } from 'framer-motion'
-import { createChannel } from '../Utils/chatFunctions'
+import { useDispatch } from 'react-redux'
 
+import { actions } from '../store/AuthState'
+import { createChannel } from '../Utils/chatFunctions'
 import '../../sass/UI/modal.scss'
 import Button from './Button'
 
@@ -13,6 +15,7 @@ const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
   }
   const channelNameRef = useRef<HTMLInputElement>(null)
   const channelDescRef = useRef<HTMLTextAreaElement>(null)
+  const dispatch = useDispatch()
 
   const root = document.getElementById('modal-root')! as HTMLDivElement
   root.addEventListener('click', closeModalHandler)
@@ -42,12 +45,22 @@ const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
         <input type="text" placeholder="Channel name" ref={channelNameRef} />
         <textarea placeholder="Channel Description" ref={channelDescRef} />
         <Button
-          onClick={() =>
-            createChannel(
-              channelNameRef.current!.value,
-              channelDescRef.current!.value
-            )
-          }
+          onClick={() => {
+            try {
+              if (channelNameRef.current!.value.trim() === '') {
+                throw new Error('Please enter a name')
+              }
+              if (channelDescRef.current!.value.trim() === '') {
+                throw new Error('Please enter a description')
+              }
+              createChannel(
+                channelNameRef.current!.value,
+                channelDescRef.current!.value
+              )
+            } catch (err: any) {
+              dispatch(actions.resetErrorMessage(err.message))
+            }
+          }}
         >
           Save
         </Button>

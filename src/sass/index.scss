@@ -4,6 +4,7 @@ body {
   font-family: 'Noto Sans', 'Nunito', Verdana, Geneva, Tahoma, sans-serif;
   position: relative;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 
   p {
     overflow: hidden;

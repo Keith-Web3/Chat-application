@@ -44,7 +44,7 @@ const DropDown: React.FC<Props> = function ({ channelId, channelDispatch }) {
   }
   const exitChannelHandler = async function () {
     if (channelId === '16A4w32PivaHAasvXbflX1676971533389') {
-      alert('Cannot exit default channel')
+      dispatch(actions.resetErrorMessage('Cannot exit default channel'))
       return
     }
     await updateDoc(channelRef, {

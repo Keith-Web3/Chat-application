@@ -8,14 +8,6 @@ export const createChannel = async function (
   channelName: string,
   channelDescription: string
 ) {
-  if (channelName.trim() === '') {
-    alert('Please enter a name')
-    return
-  }
-  if (channelDescription.trim() === '') {
-    alert('Please enter a description')
-    return
-  }
   try {
     const id = `${nanoid()}${Date.now()}`
     const response = await setDoc(doc(database, 'channels', id), {
@@ -33,8 +25,8 @@ export const createChannel = async function (
       messages: [],
     })
     console.log('channel created!')
-  } catch (err: unknown) {
-    alert(err)
+  } catch (err: any) {
+    console.log(err.message)
   }
 }
 

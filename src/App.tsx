@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
 import { nanoid } from '@reduxjs/toolkit'
+import { AnimatePresence } from 'framer-motion'
 
 import { actions } from './components/store/AuthState'
 import { auth } from './components/Data/firebase'
@@ -14,6 +15,7 @@ import AllChannels from './components/AllChannels'
 import SignUp from './components/Auth/SignUp'
 import JoinChannel from './components/JoinChannel'
 import CallInterface from './components/web-rtc/CallInterface'
+import Popup from './components/UI/Popup'
 
 interface reducer {
   channelName: string
@@ -50,6 +52,8 @@ const initialReducerArg: reducer = {
   channelMessages: [],
 }
 
+let timer: NodeJS.Timeout
+
 const App: React.FC = function () {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -59,6 +63,9 @@ const App: React.FC = function () {
   )
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false)
+  const errMessage = useSelector(
+    (state: { errorMessage: string }) => state.errorMessage
+  )
 
   const user = useSelector((state: { user: any; isLoggedIn: boolean }) => state)
 
@@ -75,56 +82,67 @@ const App: React.FC = function () {
       : 'unset'
   }, [isModalOpen])
 
+  useEffect(() => {
+    timer = setTimeout(() => {
+      dispatch(actions.resetErrorMessage(''))
+    }, 3100)
+
+    return () => clearTimeout(timer)
+  }, [errMessage])
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/join/:channelId" element={<JoinChannel />} />
-      {user.user && (
-        <>
-          <Route
-            path="/call"
-            element={<CallInterface channelId={channelInfo.channelId} />}
-          />
-          <Route
-            path="/"
-            element={
-              <ChatInterface
-                isModalOpen={isModalOpen}
-                setIsNavOpen={setIsNavOpen}
-                setIsModalOpen={setIsModalOpen}
-                channelInfo={channelInfo}
-              />
-            }
-          >
+    <AnimatePresence>
+      {errMessage && <Popup key={nanoid()} message={errMessage} />}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/join/:channelId" element={<JoinChannel />} />
+        {user.user && (
+          <>
             <Route
-              path=":name"
-              element={
-                <ChannelInfoNav
-                  isNavOpen={isNavOpen}
-                  channelInfo={channelInfo}
-                  channelDispatch={dispatchFn}
-                  setIsNavOpen={setIsNavOpen}
-                />
-              }
+              path="/call"
+              element={<CallInterface channelId={channelInfo.channelId} />}
             />
             <Route
-              path="channels"
+              path="/"
               element={
-                <AllChannels
-                  isNavOpen={isNavOpen}
+                <ChatInterface
+                  isModalOpen={isModalOpen}
+                  setIsNavOpen={setIsNavOpen}
                   setIsModalOpen={setIsModalOpen}
-                  channelId={channelInfo.channelId}
-                  channelDispatch={dispatchFn}
-                  setIsNavOpen={setIsNavOpen}
+                  channelInfo={channelInfo}
                 />
               }
-            />
-          </Route>
-        </>
-      )}
-      <Route path="*" element={<Navigate to={'/login'} />} />
-    </Routes>
+            >
+              <Route
+                path=":name"
+                element={
+                  <ChannelInfoNav
+                    isNavOpen={isNavOpen}
+                    channelInfo={channelInfo}
+                    channelDispatch={dispatchFn}
+                    setIsNavOpen={setIsNavOpen}
+                  />
+                }
+              />
+              <Route
+                path="channels"
+                element={
+                  <AllChannels
+                    isNavOpen={isNavOpen}
+                    setIsModalOpen={setIsModalOpen}
+                    channelId={channelInfo.channelId}
+                    channelDispatch={dispatchFn}
+                    setIsNavOpen={setIsNavOpen}
+                  />
+                }
+              />
+            </Route>
+          </>
+        )}
+        <Route path="*" element={<Navigate to={'/login'} />} />
+      </Routes>
+    </AnimatePresence>
   )
 }
 
