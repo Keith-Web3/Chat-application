@@ -51,6 +51,8 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     }
     if (parsedMessage.type === 'answer') {
       addAnswer(parsedMessage.answer)
+      console.log(parsedMessage.answer)
+      fallBackOffer = parsedMessage.answer
     }
     if (parsedMessage.type === 'candidate') {
       console.log(fallBackOffer)
