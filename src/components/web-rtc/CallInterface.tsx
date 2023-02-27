@@ -28,7 +28,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   let localStream: MediaStream
   let remoteStream: MediaStream
   let peerConnection: RTCPeerConnection
-  let fallBackOffer: RTCSessionDescriptionInit
   const servers = {
     iceServers: [
       {
@@ -50,21 +49,11 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       createAnswer(memberId, parsedMessage.offer)
     }
     if (parsedMessage.type === 'answer') {
+      await peerConnection.setRemoteDescription(parsedMessage.answer)
       addAnswer(parsedMessage.answer)
-      console.log(parsedMessage.answer)
-      fallBackOffer = parsedMessage.answer
     }
     if (parsedMessage.type === 'candidate') {
-      console.log(fallBackOffer)
-      if (peerConnection) {
-        if (peerConnection.remoteDescription === null) {
-          peerConnection
-            .setRemoteDescription(fallBackOffer)
-            .then(() => peerConnection.addIceCandidate(parsedMessage.candidate))
-        } else {
-          peerConnection.addIceCandidate(parsedMessage.candidate)
-        }
-      }
+      peerConnection.addIceCandidate(parsedMessage.candidate)
     }
     console.log('Message:', message)
     console.log(parsedMessage)
@@ -186,9 +175,12 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     }
   }
   const addAnswer = async function (answer: RTCSessionDescriptionInit) {
-    if (!peerConnection.currentRemoteDescription) {
-      peerConnection.setRemoteDescription(answer)
-    }
+    console.log(
+      'Remote description:',
+      peerConnection.currentRemoteDescription,
+      peerConnection.remoteDescription
+    )
+    await peerConnection.setRemoteDescription(answer)
   }
   const leaveChannel = async function () {
     await channel?.leave()
