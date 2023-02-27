@@ -170,7 +170,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     memberId: string,
     offer: RTCSessionDescriptionInit
   ) {
-    fallBackOffer = offer
     try {
       await createPeerConnection(memberId)
 
