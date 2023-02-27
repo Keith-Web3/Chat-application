@@ -53,6 +53,11 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       addAnswer(parsedMessage.answer)
     }
     if (parsedMessage.type === 'candidate') {
+      console.log(
+        'Adding icecandidate, Remote description:',
+        peerConnection.currentRemoteDescription,
+        peerConnection.remoteDescription
+      )
       peerConnection.addIceCandidate(parsedMessage.candidate)
     }
     console.log('Message:', message)
@@ -159,10 +164,16 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     memberId: string,
     offer: RTCSessionDescriptionInit
   ) {
+    console.log('offer:', offer)
     try {
       await createPeerConnection(memberId)
 
       await peerConnection.setRemoteDescription(offer)
+      console.log(
+        'Remote description:',
+        peerConnection.currentRemoteDescription,
+        peerConnection.remoteDescription
+      )
       const answer = await peerConnection.createAnswer()
       await peerConnection.setLocalDescription(answer)
 
@@ -180,7 +191,9 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       peerConnection.currentRemoteDescription,
       peerConnection.remoteDescription
     )
-    await peerConnection.setRemoteDescription(answer)
+    if (!peerConnection.currentRemoteDescription) {
+      await peerConnection.setRemoteDescription(answer)
+    }
   }
   const leaveChannel = async function () {
     await channel?.leave()
