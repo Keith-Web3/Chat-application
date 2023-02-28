@@ -1,7 +1,8 @@
-import React, { MouseEvent, useEffect, useRef } from 'react'
+import React, { MouseEvent, useEffect, useRef, useState } from 'react'
 import AgoraRTM, { RtmClient, RtmChannel, RtmMessage } from 'agora-rtm-sdk'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { TailSpin } from 'react-loader-spinner'
 
 import { actions } from '../store/AuthState'
 import { auth } from '../Data/firebase'
@@ -15,6 +16,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 }) {
   const userOne = useRef<HTMLVideoElement>(null)
   const userTwo = useRef<HTMLVideoElement>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -91,6 +93,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         audio: true,
       })
       userOne.current!.srcObject = localStream
+      setIsLoading(false)
     } catch (err: any) {
       dispatch(actions.resetErrorMessage(err.message))
     }
@@ -262,6 +265,19 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 
   return (
     <div className="call-interface">
+      {isLoading && (
+        <TailSpin
+          height="60"
+          width="100"
+          color="#0b090c"
+          ariaLabel="tail-spin-loading"
+          radius="1"
+          wrapperStyle={{}}
+          wrapperClass="loader"
+          visible={true}
+        />
+      )}
+
       <div id="videos">
         <video
           className="video-player user-one"

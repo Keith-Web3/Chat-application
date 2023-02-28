@@ -89,7 +89,9 @@ const DropDown: React.FC<Props> = function ({ channelId, channelDispatch }) {
           navigator.clipboard.writeText(
             `https://astounding-choux-c5148e.netlify.app/join/:${channelId}`
           )
-          alert('Invite link copied to clipboard!')
+          dispatch(
+            actions.resetErrorMessage('Invite link copied to clipboard!')
+          )
         }}
       >
         <p>Invite Link</p>

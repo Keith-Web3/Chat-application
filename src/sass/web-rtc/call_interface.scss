@@ -3,11 +3,14 @@
 .call-interface {
   overflow-y: hidden;
   height: 100vh;
+
+  .loader {
+    width: max-content;
+    margin-inline: auto;
+  }
   #videos {
     display: grid;
     min-height: 100vh;
-    // grid-template-columns: 1fr 1fr;
-    // gap: 2em;
 
     .user-one {
       position: absolute;
