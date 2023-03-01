@@ -6,7 +6,7 @@ import { database } from '../Data/firebase'
 import { auth } from '../Data/firebase'
 
 const configuration = new Configuration({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  apiKey: rot13(import.meta.env.VITE_OPENAI_API_KEY),
 })
 const openai = new OpenAIApi(configuration)
 
@@ -90,4 +90,18 @@ export const sendMessage = async function (message: string, channelId: string) {
       date: Date.now(),
     }),
   })
+}
+function rot13(message: string) {
+  let result = ''
+  for (let i = 0; i < message.length; i++) {
+    const c = message.charCodeAt(i)
+    if (c >= 65 && c <= 90) {
+      result += String.fromCharCode(((c - 65 + 13) % 26) + 65)
+    } else if (c >= 97 && c <= 122) {
+      result += String.fromCharCode(((c - 97 + 13) % 26) + 97)
+    } else {
+      result += message.charAt(i)
+    }
+  }
+  return result
 }

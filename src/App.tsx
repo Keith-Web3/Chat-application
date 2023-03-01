@@ -76,11 +76,11 @@ const App: React.FC = function () {
     setIsNavOpen(true)
   }, [])
 
-  useEffect(() => {
-    document.querySelector('html')!.style.overflowY = isModalOpen
-      ? 'hidden'
-      : 'unset'
-  }, [isModalOpen])
+  // useEffect(() => {
+  //   document.querySelector('html')!.style.overflowY = isModalOpen
+  //     ? 'hidden'
+  //     : 'unset'
+  // }, [isModalOpen])
 
   useEffect(() => {
     timer = setTimeout(() => {
