@@ -2,6 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 import '../sass/member_message.scss'
+import openai from '../assets/chatgpt-logo-02AFA704B5-seeklogo.com.png'
 import imgU from '../assets/account_circle_FILL0_wght400_GRAD0_opsz48.svg'
 
 interface MemberMessageProp {
@@ -19,7 +20,7 @@ const MemberMessage: React.FC<MemberMessageProp> = function ({
   message,
   email,
 }) {
-  const img = userImg || imgU
+  const img = userImg === 'openai' ? openai : userImg || imgU
   const name = userName || email.slice(0, email.indexOf('@'))
   let modifiedDate = new Date(date)
   const time = `${modifiedDate.getHours()}:${(

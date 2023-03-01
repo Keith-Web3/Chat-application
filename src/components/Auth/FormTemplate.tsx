@@ -58,7 +58,6 @@ const FormTemplate: React.FC<Props> = function ({
         onSubmit={submitHandler(type)}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        // transition={{ type: 'tween', duration: 1 }}
         exit={{ opacity: 0 }}
       >
         <img src={logo} alt="logo" />

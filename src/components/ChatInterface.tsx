@@ -122,7 +122,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
-          {channelInfo.channelMembers.length === 2 && (
+          {channelInfo.channelMembers.length === 3 && (
             <img
               className="video-call"
               src={videoCallIcon}
