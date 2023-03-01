@@ -42,7 +42,11 @@ export const createChannel = async function (
   }
 }
 
-export const sendMessage = async function (message: string, channelId: string) {
+export const sendMessage = async function (
+  message: string,
+  channelId: string,
+  channelMessages: any[]
+) {
   if (message.trim().length === 0) return
   const channelRef = doc(database, 'channels', channelId)
 
@@ -50,6 +54,10 @@ export const sendMessage = async function (message: string, channelId: string) {
     const userName =
       auth.currentUser?.displayName ||
       auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
+    const prompt =
+      channelMessages.map(message => message.message).join('\n') +
+      '\n' +
+      message.trim().split(' ').slice(1).join(' ')
     await updateDoc(channelRef, {
       messages: arrayUnion({
         message,
@@ -61,9 +69,9 @@ export const sendMessage = async function (message: string, channelId: string) {
     })
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: message.trim().split(' ').slice(0, -1).join(' '),
+      prompt,
       max_tokens: 100,
-      temperature: 1.5,
+      temperature: 0.8,
     })
     await updateDoc(channelRef, {
       messages: arrayUnion({

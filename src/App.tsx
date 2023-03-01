@@ -2,11 +2,12 @@ import { useReducer, useEffect, useState } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 import { nanoid } from '@reduxjs/toolkit'
 import { AnimatePresence } from 'framer-motion'
 
 import { actions } from './components/store/AuthState'
-import { auth } from './components/Data/firebase'
+import { auth, database } from './components/Data/firebase'
 import Login from './components/Auth/Login'
 import userImg from './assets/MyProfile.jpg'
 import ChannelInfoNav from './components/ChannelInfoNav'
@@ -73,14 +74,34 @@ const App: React.FC = function () {
     onAuthStateChanged(auth, user => {
       if (user) dispatch(actions.login({ user: user, navigateFn: navigate }))
     })
+    const docRef = doc(database, 'channels', channelInfo.channelId)
+    ;(async () => {
+      const docSnap = await getDoc(docRef)
+      const data = docSnap.data() as {
+        channelDescription: string
+        channelName: string
+        id: string
+        members: {
+          id: string
+          photoURL: string
+          name: string
+          email: string
+        }[]
+        messages: any[]
+      }
+      dispatchFn({
+        type: 'initial',
+        payload: {
+          channelName: 'DEFAULT CHANNEL',
+          channelId: '16A4w32PivaHAasvXbflX1676971533389',
+          channelDesc: 'Test channel for all users',
+          channelMembers: data.members,
+          channelMessages: data.messages,
+        },
+      })
+    })()
     setIsNavOpen(true)
   }, [])
-
-  // useEffect(() => {
-  //   document.querySelector('html')!.style.overflowY = isModalOpen
-  //     ? 'hidden'
-  //     : 'unset'
-  // }, [isModalOpen])
 
   useEffect(() => {
     timer = setTimeout(() => {
