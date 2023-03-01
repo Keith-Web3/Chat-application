@@ -46,7 +46,7 @@ export const sendMessage = async function (message: string, channelId: string) {
   if (message.trim().length === 0) return
   const channelRef = doc(database, 'channels', channelId)
 
-  if (message.trim().toLowerCase().endsWith('/replyai')) {
+  if (message.trim().toLowerCase().startsWith('@openai')) {
     const userName =
       auth.currentUser?.displayName ||
       auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
