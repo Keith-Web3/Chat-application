@@ -16,6 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "public/agora-token-server.cjs",
+    "agora-token-server.cjs",
+    "agora-token-server.cjs"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
