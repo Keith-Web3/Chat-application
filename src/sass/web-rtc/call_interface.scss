@@ -1,37 +1,21 @@
 @use '../variables' as *;
 
 .call-interface {
-  overflow-y: hidden;
-  height: 100vh;
+  min-height: 100vh;
+  position: relative;
 
-  .loader {
-    width: max-content;
-    margin-inline: auto;
+  .local-player {
+    position: absolute;
+    inset: $spacer auto auto $spacer;
+    width: min(90%, 300px);
+    aspect-ratio: 1 / 1;
+    z-index: 1;
   }
-  #videos {
-    display: grid;
-    min-height: 100vh;
-
-    .user-one {
-      position: absolute;
-      inset: $spacer auto auto $spacer;
-      width: min(90%, 300px);
-      z-index: 1;
-    }
-    .user-two {
-      display: none;
-      width: 100%;
-      height: 100%;
-    }
+  .remote-player {
+    width: 100%;
+    height: 100vh;
   }
-  .video-player {
-    // width: 100%;
-    background-color: #000;
-    // height: 300px;
-    transform: scaleX(-1);
-  }
-
-  #controls {
+  .controls {
     position: fixed;
     inset: auto auto 20px 50%;
     width: max-content;
@@ -60,3 +44,63 @@
     }
   }
 }
+// .call-interface {
+//   overflow-y: hidden;
+//   height: 100vh;
+
+//   .loader {
+//     width: max-content;
+//     margin-inline: auto;
+//   }
+//   #videos {
+//     display: grid;
+//     min-height: 100vh;
+
+//     .user-one {
+//       position: absolute;
+//       inset: $spacer auto auto $spacer;
+//       width: min(90%, 300px);
+//       z-index: 1;
+//     }
+//     .user-two {
+//       display: none;
+//       width: 100%;
+//       height: 100%;
+//     }
+//   }
+//   .video-player {
+//     // width: 100%;
+//     background-color: #000;
+//     // height: 300px;
+//     transform: scaleX(-1);
+//   }
+
+//   #controls {
+//     position: fixed;
+//     inset: auto auto 20px 50%;
+//     width: max-content;
+//     transform: translateX(-50%);
+//     display: flex;
+//     gap: $spacer * 1.5;
+
+//     .control-container {
+//       background-color: rgba(#b366f9, 0.9);
+//       padding: 20px;
+//       border-radius: 50%;
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       cursor: pointer;
+//       width: max-content;
+//       transition: background-color 200ms linear;
+
+//       &#leave-btn {
+//         background-color: $red;
+//       }
+//       img {
+//         width: 30px;
+//         aspect-ratio: 1 / 1;
+//       }
+//     }
+//   }
+// }
