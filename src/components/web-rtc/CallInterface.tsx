@@ -48,7 +48,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       await createAnswer(memberId, parsedMessage.offer)
     }
     if (parsedMessage.type === 'answer') {
-      await addAnswer(parsedMessage.answer)
+      await addAnswer(memberId, parsedMessage.answer)
     }
     if (parsedMessage.type === 'candidate') {
       console.log(
@@ -105,7 +105,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     })
   }
 
-  const createPeerConnection = async function (memberId: string) {
+  const createPeerConnection = async function () {
     peerConnection = new RTCPeerConnection(servers)
 
     remoteStream = new MediaStream()
@@ -126,26 +126,16 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       peerConnection!.addTrack(track, localStream!)
     })
 
-    peerConnection!.addEventListener('track', e => {
+    peerConnection.addEventListener('track', e => {
       e.streams[0].getTracks().forEach(track => {
         remoteStream!.addTrack(track)
       })
-    })
-    peerConnection!.addEventListener('icecandidate', e => {
-      if (e.candidate) {
-        client!.sendMessageToPeer(
-          {
-            text: JSON.stringify({ type: 'candidate', candidate: e.candidate }),
-          },
-          memberId
-        )
-      }
     })
   }
 
   const createOffer = async function (memberId: string) {
     try {
-      await createPeerConnection(memberId)
+      await createPeerConnection()
 
       const offer = await peerConnection.createOffer()
       await peerConnection.setLocalDescription(offer)
@@ -165,16 +155,29 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   ) {
     console.log('offer:', offer)
     try {
-      await createPeerConnection(memberId)
+      await createPeerConnection()
 
       await peerConnection.setRemoteDescription(offer)
       const answer = await peerConnection.createAnswer()
       await peerConnection.setLocalDescription(answer)
 
-      client!.sendMessageToPeer(
+      client.sendMessageToPeer(
         { text: JSON.stringify({ type: 'answer', answer: answer }) },
         memberId
       )
+      peerConnection.addEventListener('icecandidate', e => {
+        if (e.candidate) {
+          client.sendMessageToPeer(
+            {
+              text: JSON.stringify({
+                type: 'candidate',
+                candidate: e.candidate,
+              }),
+            },
+            memberId
+          )
+        }
+      })
       console.log(
         'Remote description after offer:',
         peerConnection!.currentRemoteDescription,
@@ -190,7 +193,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       console.log('ErrorMsg:', err.message)
     }
   }
-  const addAnswer = async function (answer: RTCSessionDescriptionInit) {
+  const addAnswer = async function (
+    memberId: string,
+    answer: RTCSessionDescriptionInit
+  ) {
     console.log(
       'Remote description:',
       peerConnection!.currentRemoteDescription,
@@ -199,6 +205,16 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     if (!peerConnection!.currentRemoteDescription) {
       await peerConnection!.setRemoteDescription(answer)
     }
+    peerConnection.addEventListener('icecandidate', e => {
+      if (e.candidate) {
+        client.sendMessageToPeer(
+          {
+            text: JSON.stringify({ type: 'candidate', candidate: e.candidate }),
+          },
+          memberId
+        )
+      }
+    })
   }
   const leaveChannel = async function () {
     await channel?.leave()
