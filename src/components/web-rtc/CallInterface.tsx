@@ -167,15 +167,31 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         { text: JSON.stringify({ type: 'answer', answer: answer }) },
         memberId
       )
-      client.sendMessageToPeer(
-        {
-          text: JSON.stringify({
-            type: 'candidate',
-            candidate: backupCandidate,
-          }),
-        },
-        memberId
-      )
+      if (backupCandidate) {
+        client.sendMessageToPeer(
+          {
+            text: JSON.stringify({
+              type: 'candidate',
+              candidate: backupCandidate,
+            }),
+          },
+          memberId
+        )
+      } else {
+        peerConnection.addEventListener('icecandidate', e => {
+          if (e.candidate) {
+            client.sendMessageToPeer(
+              {
+                text: JSON.stringify({
+                  type: 'candidate',
+                  candidate: e.candidate,
+                }),
+              },
+              memberId
+            )
+          }
+        })
+      }
       console.log(
         'Remote description after offer:',
         peerConnection!.currentRemoteDescription,
