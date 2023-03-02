@@ -26,7 +26,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   let localStream: MediaStream
   let remoteStream: MediaStream
   let peerConnection: RTCPeerConnection
-  let backupCandidate: RTCIceCandidateInit
+  let backupCandidate: RTCIceCandidate
   const servers = {
     iceServers: [
       {
@@ -56,14 +56,10 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         peerConnection!.currentRemoteDescription,
         peerConnection!.remoteDescription
       )
-      if (peerConnection!.remoteDescription) {
-        await peerConnection!.addIceCandidate(
-          new RTCIceCandidate(parsedMessage.candidate)
-        )
-        console.log('icecandidate added!')
-      }
-
-      backupCandidate = parsedMessage.candidate
+      await peerConnection!.addIceCandidate(
+        new RTCIceCandidate(parsedMessage.candidate)
+      )
+      console.log('icecandidate added!')
     }
     console.log('Message:', message)
     console.log(parsedMessage)
@@ -105,7 +101,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     })
   }
 
-  const createPeerConnection = async function () {
+  const createPeerConnection = async function (memberId: string) {
     peerConnection = new RTCPeerConnection(servers)
 
     remoteStream = new MediaStream()
@@ -128,14 +124,20 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 
     peerConnection.addEventListener('track', e => {
       e.streams[0].getTracks().forEach(track => {
+        console.log('peertrack:', track)
         remoteStream!.addTrack(track)
       })
+    })
+    peerConnection.addEventListener('icecandidate', e => {
+      if (e.candidate) {
+        backupCandidate = e.candidate
+      }
     })
   }
 
   const createOffer = async function (memberId: string) {
     try {
-      await createPeerConnection()
+      await createPeerConnection(memberId)
 
       const offer = await peerConnection.createOffer()
       await peerConnection.setLocalDescription(offer)
@@ -155,7 +157,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   ) {
     console.log('offer:', offer)
     try {
-      await createPeerConnection()
+      await createPeerConnection(memberId)
 
       await peerConnection.setRemoteDescription(offer)
       const answer = await peerConnection.createAnswer()
@@ -165,30 +167,26 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         { text: JSON.stringify({ type: 'answer', answer: answer }) },
         memberId
       )
-      peerConnection.addEventListener('icecandidate', e => {
-        if (e.candidate) {
-          client.sendMessageToPeer(
-            {
-              text: JSON.stringify({
-                type: 'candidate',
-                candidate: e.candidate,
-              }),
-            },
-            memberId
-          )
-        }
-      })
+      client.sendMessageToPeer(
+        {
+          text: JSON.stringify({
+            type: 'candidate',
+            candidate: backupCandidate,
+          }),
+        },
+        memberId
+      )
       console.log(
         'Remote description after offer:',
         peerConnection!.currentRemoteDescription,
         peerConnection!.remoteDescription
       )
-      if (backupCandidate) {
-        await peerConnection!.addIceCandidate(
-          new RTCIceCandidate(backupCandidate)
-        )
-        console.log('ice-candidate added')
-      }
+      // if (backupCandidate) {
+      //   await peerConnection!.addIceCandidate(
+      //     new RTCIceCandidate(backupCandidate)
+      //   )
+      //   console.log('ice-candidate added')
+      // }
     } catch (err: any) {
       console.log('ErrorMsg:', err.message)
     }
@@ -205,16 +203,15 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     if (!peerConnection!.currentRemoteDescription) {
       await peerConnection!.setRemoteDescription(answer)
     }
-    peerConnection.addEventListener('icecandidate', e => {
-      if (e.candidate) {
-        client.sendMessageToPeer(
-          {
-            text: JSON.stringify({ type: 'candidate', candidate: e.candidate }),
-          },
-          memberId
-        )
-      }
-    })
+    client.sendMessageToPeer(
+      {
+        text: JSON.stringify({
+          type: 'candidate',
+          candidate: backupCandidate,
+        }),
+      },
+      memberId
+    )
   }
   const leaveChannel = async function () {
     await channel?.leave()
