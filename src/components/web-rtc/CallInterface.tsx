@@ -1,65 +1,19 @@
-import React, { MouseEvent, useEffect, useRef, useReducer } from 'react'
+import React, { MouseEvent, useEffect, useRef } from 'react'
 import AgoraRTM, { RtmClient, RtmChannel, RtmMessage } from 'agora-rtm-sdk'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { TailSpin } from 'react-loader-spinner'
 
-import { actions } from '../store/AuthState'
 import { auth } from '../Data/firebase'
 import cameraBtn from '../../assets/video-solid.svg'
 import microphone from '../../assets/microphone-solid.svg'
 import phone from '../../assets/phone-solid.svg'
 import '../../sass/web-rtc/call_interface.scss'
 
-interface Connection {
-  client: RtmClient
-  channel: RtmChannel
-  localStream: MediaStream
-  remoteStream: MediaStream
-  peerConnection: RTCPeerConnection
-  backupCandidate: RTCIceCandidateInit
-}
-type payloadType =
-  | RtmClient
-  | RtmChannel
-  | MediaStream
-  | RTCPeerConnection
-  | RTCIceCandidateInit
-type actionType = keyof Connection
-
-const connectionReducer = function (
-  state: Partial<Connection>,
-  action: { type: actionType; payload: payloadType }
-) {
-  console.log({
-    ...state,
-    [action.type]: action.payload,
-  })
-  return {
-    ...state,
-    [action.type]: action.payload,
-  }
-}
-const initialState: Partial<Connection> = {}
-
 const CallInterface: React.FC<{ channelId: string }> = function ({
   channelId,
 }) {
   const userOne = useRef<HTMLVideoElement>(null)
   const userTwo = useRef<HTMLVideoElement>(null)
-  // const [connection, dispatchConnection] = useReducer(
-  //   connectionReducer,
-  //   initialState
-  // )
-  // const {
-  //   client,
-  //   channel,
-  //   localStream,
-  //   remoteStream,
-  //   peerConnection,
-  //   backupCandidate,
-  // } = connection
-  const dispatch = useDispatch()
+
   const navigate = useNavigate()
 
   const appId = import.meta.env.VITE_AGORA_APP_ID
@@ -108,10 +62,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         )
         console.log('icecandidate added!')
       }
-      // dispatchConnection({
-      //   type: 'backupCandidate',
-      //   payload: parsedMessage.candidate,
-      // })
+
       backupCandidate = parsedMessage.candidate
     }
     console.log('Message:', message)
@@ -124,64 +75,38 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   }
 
   const init = async function () {
-    // dispatchConnection({
-    //   type: 'client',
-    //   payload: AgoraRTM.createInstance(appId),
-    // })
     client = AgoraRTM.createInstance(appId)
     try {
-      console.log('client:', client)
-      const res = await client!.login({ uid, token })
-      // dispatchConnection({
-      //   type: 'channel',
-      //   payload: client!.createChannel(channelId),
-      // })
       channel = client.createChannel(channelId)
       await channel!.join()
-      channel!.on('MemberJoined', handleUserJoined)
-      channel!.on('MemberLeft', () => {
+      channel.on('MemberJoined', handleUserJoined)
+      channel.on('MemberLeft', () => {
         userTwo.current!.style.display = 'none'
       })
-      client!.on('MessageFromPeer', handleMessageFromPeer)
-      // setIsLoading(false)
+      client.on('MessageFromPeer', handleMessageFromPeer)
       localStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       })
-      // dispatchConnection({ type: 'localStream', payload: stream })
       userOne.current!.srcObject = localStream!
     } catch (err: any) {
       console.log('ErrorMsg:', err.message)
-      // dispatch(actions.resetErrorMessage(err.message))
     }
 
     client!.on('ConnectionStateChanged', async (newState, reason) => {
       console.log(`${reason}: connection state changed to ${newState}`)
       if (reason === 'REMOTE_LOGIN') {
-        // dispatch(
-        //   actions.resetErrorMessage(
-        //     'multiple login detected kindly logout and login back'
-        //   )
-        // )
         console.log('multiple login detected kindly logout and login back')
         return
       }
-      // dispatch(
-      //   actions.resetErrorMessage(
-      //     `${reason}: connection state changed to ${newState}`
-      //   )
-      // )
+
       console.log(`${reason}: connection state changed to ${newState}`)
     })
   }
 
   const createPeerConnection = async function (memberId: string) {
     peerConnection = new RTCPeerConnection(servers)
-    // dispatchConnection({
-    //   type: 'peerConnection',
-    //   payload: new RTCPeerConnection(servers),
-    // })
-    // dispatchConnection({ type: 'remoteStream', payload: new MediaStream() })
+
     remoteStream = new MediaStream()
 
     userTwo.current!.srcObject = remoteStream!
@@ -192,7 +117,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         video: true,
         audio: true,
       })
-      // dispatchConnection({ type: 'localStream', payload: stream })
 
       userOne.current!.srcObject = localStream!
     }
@@ -222,15 +146,14 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     try {
       await createPeerConnection(memberId)
 
-      const offer = await peerConnection!.createOffer()
-      await peerConnection!.setLocalDescription(offer)
+      const offer = await peerConnection.createOffer()
+      await peerConnection.setLocalDescription(offer)
 
-      client!.sendMessageToPeer(
+      client.sendMessageToPeer(
         { text: JSON.stringify({ type: 'offer', offer: offer }) },
         memberId
       )
     } catch (err: any) {
-      // dispatch(actions.resetErrorMessage(err.message))
       console.log('ErrorMsg:', err.message)
     }
   }
@@ -243,7 +166,14 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
     try {
       await createPeerConnection(memberId)
 
-      await peerConnection!.setRemoteDescription(offer)
+      await peerConnection.setRemoteDescription(offer)
+      const answer = await peerConnection.createAnswer()
+      await peerConnection.setLocalDescription(answer)
+
+      client!.sendMessageToPeer(
+        { text: JSON.stringify({ type: 'answer', answer: answer }) },
+        memberId
+      )
       console.log(
         'Remote description after offer:',
         peerConnection!.currentRemoteDescription,
@@ -255,15 +185,7 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         )
         console.log('ice-candidate added')
       }
-      const answer = await peerConnection!.createAnswer()
-      await peerConnection!.setLocalDescription(answer)
-
-      client!.sendMessageToPeer(
-        { text: JSON.stringify({ type: 'answer', answer: answer }) },
-        memberId
-      )
     } catch (err: any) {
-      // dispatch(actions.resetErrorMessage(err.message))
       console.log('ErrorMsg:', err.message)
     }
   }
@@ -341,18 +263,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
 
   return (
     <div className="call-interface">
-      (
-      <TailSpin
-        height="60"
-        width="100"
-        color="#0b090c"
-        ariaLabel="tail-spin-loading"
-        radius="1"
-        wrapperStyle={{}}
-        wrapperClass="loader"
-        visible={true}
-      />
-      )
       <div id="videos">
         <video
           className="video-player user-one"
