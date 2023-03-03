@@ -93,7 +93,7 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
             const publicChannel = doc(
               database,
               'channels',
-              'NRQtxNLd9y6hBEEO7stzC1677834214800'
+              '8BVeyNGrX0r5JUrtDm47d1677839254038'
             )
             ;(async () => {
               await updateDoc(channel, {
@@ -142,7 +142,7 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
           const publicChannel = doc(
             database,
             'channels',
-            'NRQtxNLd9y6hBEEO7stzC1677834214800'
+            '8BVeyNGrX0r5JUrtDm47d1677839254038'
           )
           dispatch(userState.actions.login({ user, navigateFn }))
           ;(async () => {
