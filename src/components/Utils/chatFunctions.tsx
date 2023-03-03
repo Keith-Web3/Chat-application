@@ -74,7 +74,7 @@ export const sendMessage = async function (
       model: 'text-davinci-003',
       prompt,
       max_tokens: 100,
-      temperature: 1.5,
+      temperature: 0.8,
     })
     await updateDoc(channelRef, {
       messages: arrayUnion({
