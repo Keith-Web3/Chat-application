@@ -36,10 +36,9 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   const mountObserver = useRef<Boolean>(false)
   const navigate = useNavigate()
   let options = {
-    appId: 'd8346d1278d8428b8dbeca76f0bde8da',
-    channel: 'mychannel',
-    token:
-      '007eJxTYIhQlHR/uNYksPGK2I7Onw45SptOvA0IFbg4U6K4TdP5xG8FhhQLYxOzFEMjc4sUCxMjiySLlKTU5ERzszSDpJRUi5TEL0cYUhoCGRl81JuYGBkgEMTnZMitTM5IzMtLzWFgAADLeSFG',
+    appId: import.meta.env.VITE_AGORA_APP_ID,
+    channel: channelId,
+    token: '',
     uid: auth.currentUser!.uid,
   }
   let agoraEngine: IAgoraRTCClient
@@ -92,8 +91,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
           channelParameters.remoteUid = user.uid.toString()
           remotePlayer.current!.id = user.uid.toString()
           channelParameters.remoteUid = user.uid.toString()
-          remotePlayer.current!.textContent =
-            'Remote user ' + user.uid.toString()
           channelParameters.remoteVideoTrack.play(remotePlayer.current!)
         }
         if (mediaType == 'audio') {
@@ -134,8 +131,26 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   }
 
   useEffect(() => {
-    startBasicCall()
-    joinRoomHandler()
+    // ;(async () => {
+    //   const res = await fetch(
+    //     `https://chat-application-nu-one.vercel.app/?uid=${
+    //       auth.currentUser!.uid
+    //     }`
+    //   )
+    //   const token = await res.json()
+    //   options.token = token.token
+    // })()
+    fetch(
+      `https://chat-application-nu-one.vercel.app/?uid=${
+        auth.currentUser!.uid
+      }&channelName=${channelId}`
+    )
+      .then(res => res.json())
+      .then(data => {
+        options.token = data.token
+        startBasicCall()
+        joinRoomHandler()
+      })
     window.addEventListener('beforeunload', leaveRoomHandler)
     // console.log('Main:', mountObserver.current)
 
@@ -143,9 +158,9 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
       window.removeEventListener('beforeunload', leaveRoomHandler)
       // console.log('After:', mountObserver.current)
 
-      if (mountObserver) {
-        leaveRoomHandler()
-      }
+      // if (mountObserver) {
+      //   leaveRoomHandler()
+      // }
     }
   }, [])
 

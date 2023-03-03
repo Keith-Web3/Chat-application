@@ -7,9 +7,12 @@
   .local-player {
     position: absolute;
     inset: $spacer auto auto $spacer;
-    width: min(90%, 300px);
-    aspect-ratio: 1 / 1;
+    width: 200px;
+    aspect-ratio: 854 / 480;
     z-index: 1;
+    @media (min-width: 400px) {
+      width: min(90%, 300px);
+    }
   }
   .remote-player {
     width: 100%;
