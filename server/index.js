@@ -1,5 +1,5 @@
 const express = require('express')
-const { RtmTokenBuilder, RtmRole } = require('agora-access-token')
+const { RtcTokenBuilder, RtcRole } = require('agora-access-token')
 require('dotenv').config()
 
 const PORT = 8080
@@ -21,10 +21,14 @@ const generateAccessToken = function (req, resp) {
 
   let uid = req.query.uid
   if (!uid || uid === '') uid = 0
+  let channelName = req.query.channelName
+  if (!channelName) {
+    return resp.status(400).json({ error: 'channel name is required' }).send()
+  }
 
-  let role = RtmTokenBuilder.Role
+  let role = RtcTokenBuilder.Role
   if (req.query.role === 'publisher') {
-    role = RtmRole.PUBLISHER
+    role = RtcRole.PUBLISHER
   }
 
   let expireTime = req.query.expireTime
@@ -36,9 +40,10 @@ const generateAccessToken = function (req, resp) {
   const currentTime = Math.floor(Date.now() / 1000)
   const privilegeExpireTime = currentTime + expireTime
 
-  const token = RtmTokenBuilder.buildToken(
+  const token = RtcTokenBuilder.buildTokenWithUid(
     APP_ID,
     APP_CERTIFICATE,
+    channelName,
     uid,
     role,
     privilegeExpireTime
