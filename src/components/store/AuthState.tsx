@@ -84,21 +84,36 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
           const user = response.user
 
           dispatch(userState.actions.login({ user, navigateFn }))
-          const channel = doc(
-            database,
-            'channels',
-            '16A4w32PivaHAasvXbflX1676971533389'
-          )
-          ;(async () => {
-            await updateDoc(channel, {
-              members: arrayUnion({
-                id: user.uid,
-                photoURL: user.photoURL,
-                name: user.displayName,
-                email: user.email,
-              }),
-            })
-          })()
+          if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+            const channel = doc(
+              database,
+              'channels',
+              '16A4w32PivaHAasvXbflX1676971533389'
+            )
+            const publicChannel = doc(
+              database,
+              'channels',
+              'NRQtxNLd9y6hBEEO7stzC1677834214800'
+            )
+            ;(async () => {
+              await updateDoc(channel, {
+                members: arrayUnion({
+                  id: user.uid,
+                  photoURL: user.photoURL,
+                  name: user.displayName,
+                  email: user.email,
+                }),
+              })
+              await updateDoc(publicChannel, {
+                members: arrayUnion({
+                  id: user.uid,
+                  photoURL: user.photoURL,
+                  name: user.displayName,
+                  email: user.email,
+                }),
+              })
+            })()
+          }
           break
         }
         case 'EMAILANDPASSWORDLOGIN': {
@@ -124,9 +139,22 @@ export const signIn = function ({ type, email, password, navigateFn }: SignIn) {
             'channels',
             '16A4w32PivaHAasvXbflX1676971533389'
           )
+          const publicChannel = doc(
+            database,
+            'channels',
+            'NRQtxNLd9y6hBEEO7stzC1677834214800'
+          )
           dispatch(userState.actions.login({ user, navigateFn }))
           ;(async () => {
             await updateDoc(channel, {
+              members: arrayUnion({
+                id: user.uid,
+                photoURL: user.photoURL,
+                name: user.displayName,
+                email: user.email,
+              }),
+            })
+            await updateDoc(publicChannel, {
               members: arrayUnion({
                 id: user.uid,
                 photoURL: user.photoURL,
