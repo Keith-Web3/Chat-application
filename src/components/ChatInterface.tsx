@@ -11,7 +11,7 @@ import { onSnapshot, collection } from 'firebase/firestore'
 import { AnimatePresence } from 'framer-motion'
 
 import { sendMessage } from './Utils/chatFunctions'
-import { database } from './Data/firebase'
+import { auth, database } from './Data/firebase'
 import MemberMessage from './MemberMessage'
 import sendBtn from '../assets/paper-plane-solid.svg'
 import bars from '../assets/bars-solid.svg'
@@ -144,28 +144,33 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               <MemberMessage key={idx} {...data} />
             ))}
           </div>
-          <label htmlFor="message" className="message-input">
-            <textarea
-              id="message"
-              placeholder="Type a message here"
-              autoComplete="off"
-              ref={messageRef}
-              onKeyDown={enterSubmit}
-              onInput={onInput}
-            />
-            <div className="textarea-width" ref={textAreaWidth}></div>
-            <button
-              onClick={() =>
-                sendMessage(
-                  messageRef.current!.value,
-                  channelInfo.channelId,
-                  channelInfo.channelMessages
-                )
-              }
-            >
-              <img src={sendBtn} alt="send" />
-            </button>
-          </label>
+          {!(
+            channelInfo.channelId === '16A4w32PivaHAasvXbflX1676971533389' &&
+            auth.currentUser!.uid !== import.meta.env.VITE_ADMIN_ID
+          ) && (
+            <label htmlFor="message" className="message-input">
+              <textarea
+                id="message"
+                placeholder="Type a message here"
+                autoComplete="off"
+                ref={messageRef}
+                onKeyDown={enterSubmit}
+                onInput={onInput}
+              />
+              <div className="textarea-width" ref={textAreaWidth}></div>
+              <button
+                onClick={() =>
+                  sendMessage(
+                    messageRef.current!.value,
+                    channelInfo.channelId,
+                    channelInfo.channelMessages
+                  )
+                }
+              >
+                <img src={sendBtn} alt="send" />
+              </button>
+            </label>
+          )}
         </div>
         {ReactDOM.createPortal(
           <AnimatePresence>

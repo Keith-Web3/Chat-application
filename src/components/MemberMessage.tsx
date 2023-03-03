@@ -50,7 +50,13 @@ const MemberMessage: React.FC<MemberMessageProp> = function ({
       animate={{ y: 0 }}
       className="member-message"
     >
-      <img src={img} alt={name} />
+      <img
+        src={img}
+        alt={name}
+        onError={e => {
+          ;(e.target as HTMLImageElement).src = imgU
+        }}
+      />
       <div className="header">
         <p className="name">{name}</p>
         <p className="date">{`${day}, ${time}`}</p>

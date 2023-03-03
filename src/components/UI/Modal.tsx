@@ -42,7 +42,12 @@ const Modal: React.FC<{ setIsModalOpen: Function }> = function ({
         }}
       >
         <h2>New Channel</h2>
-        <input type="text" placeholder="Channel name" ref={channelNameRef} />
+        <input
+          type="text"
+          placeholder="Channel name"
+          maxLength={24}
+          ref={channelNameRef}
+        />
         <textarea placeholder="Channel Description" ref={channelDescRef} />
         <Button
           onClick={() => {

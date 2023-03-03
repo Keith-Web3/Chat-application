@@ -15,7 +15,13 @@ const Member: React.FC<MemberProps> = function ({ img, name, email = '' }) {
 
   return (
     <div className="member">
-      <img src={img === 'openai' ? openai : img || userImg} alt={editedName} />
+      <img
+        src={img === 'openai' ? openai : img || userImg}
+        alt={editedName}
+        onError={e => {
+          ;(e.target as HTMLImageElement).src = userImg
+        }}
+      />
       <p className={editedName}>{editedName}</p>
     </div>
   )
