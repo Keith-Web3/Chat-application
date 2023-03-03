@@ -55,7 +55,10 @@ export const sendMessage = async function (
       auth.currentUser?.displayName ||
       auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
     const prompt =
-      channelMessages.map(message => message.message).join('\n') +
+      channelMessages
+        .map(message => message.message)
+        .slice(-30)
+        .join('\n') +
       '\n' +
       message.trim().split(' ').slice(1).join(' ')
     await updateDoc(channelRef, {
