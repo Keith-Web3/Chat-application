@@ -29,6 +29,7 @@ interface reducer {
     email: string
   }[]
   channelMessages: any[]
+  isPrivate?: boolean
 }
 
 const channelReducerFn = function (
@@ -152,7 +153,7 @@ const App: React.FC = function () {
                   <AllChannels
                     isNavOpen={isNavOpen}
                     setIsModalOpen={setIsModalOpen}
-                    channelId={channelInfo.channelId}
+                    channelInfo={channelInfo}
                     channelDispatch={dispatchFn}
                     setIsNavOpen={setIsNavOpen}
                   />

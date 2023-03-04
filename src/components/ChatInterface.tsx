@@ -24,6 +24,7 @@ interface ChatInterfaceProps {
     channelName: string
     channelDesc: string
     channelId: string
+    isPrivate?: boolean
     channelMembers: {
       id: string
       photoURL: string
@@ -50,11 +51,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   const enterSubmit: KeyboardEventHandler<HTMLTextAreaElement> = function (e) {
     if (e.key === 'Enter') {
       e.preventDefault()
-      sendMessage(
-        messageRef.current!.value,
-        channelInfo.channelId,
-        channelInfo.channelMessages
-      )
+      sendMessage(messageRef.current!.value, channelInfo)
       textAreaWidth.current!.innerHTML = ''
       messageRef.current!.style.height =
         textAreaWidth.current!.clientHeight + 'px'
@@ -129,7 +126,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
             className="menu"
           />
           <p>{channelInfo.channelName}</p>
-          {channelInfo.channelMembers.length === 3 && (
+          {(channelInfo.channelMembers.length === 3 ||
+            channelInfo.isPrivate) && (
             <img
               className="video-call"
               src={videoCallIcon}
@@ -160,11 +158,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               <div className="textarea-width" ref={textAreaWidth}></div>
               <button
                 onClick={() =>
-                  sendMessage(
-                    messageRef.current!.value,
-                    channelInfo.channelId,
-                    channelInfo.channelMessages
-                  )
+                  sendMessage(messageRef.current!.value, channelInfo)
                 }
               >
                 <img src={sendBtn} alt="send" />

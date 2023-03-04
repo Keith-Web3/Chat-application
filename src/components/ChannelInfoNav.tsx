@@ -14,6 +14,7 @@ interface NavBarProps {
     channelName: string
     channelDesc: string
     channelId: string
+    isPrivate?: boolean
     channelMembers: {
       id: string
       photoURL: string
@@ -67,15 +68,15 @@ const ChannelInfoNav: React.FC<NavBarProps> = function ({
               img={member.photoURL}
               name={member.name}
               email={member.email}
+              id={member.id}
+              isPrivate={channelInfo.isPrivate}
+              channelDispatch={channelDispatch}
               key={nanoid()}
             />
           ))}
         </div>
       </div>
-      <User
-        channelId={channelInfo.channelId}
-        channelDispatch={channelDispatch}
-      />
+      <User channelInfo={channelInfo} channelDispatch={channelDispatch} />
     </div>
   )
 }

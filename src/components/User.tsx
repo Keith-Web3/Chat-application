@@ -9,7 +9,18 @@ import '../sass/user.scss'
 import DropDown from './UI/DropDown'
 
 interface Props {
-  channelId: string
+  channelInfo: {
+    channelName: string
+    channelDesc: string
+    channelId: string
+    channelMembers: {
+      id: string
+      photoURL: string
+      name: string
+      email: string
+    }[]
+    channelMessages: any[]
+  }
   channelDispatch: React.Dispatch<{
     type: string
     payload: {
@@ -27,7 +38,7 @@ interface Props {
   }>
 }
 
-const User: React.FC<Props> = function ({ channelId, channelDispatch }) {
+const User: React.FC<Props> = function ({ channelInfo, channelDispatch }) {
   const user = useSelector(
     (state: { user: any; isLoggedIn: boolean }) => state.user
   )
@@ -65,7 +76,7 @@ const User: React.FC<Props> = function ({ channelId, channelDispatch }) {
         {isDropDownOpen && (
           <DropDown
             key={nanoid()}
-            channelId={channelId}
+            channelInfo={channelInfo}
             channelDispatch={channelDispatch}
           />
         )}

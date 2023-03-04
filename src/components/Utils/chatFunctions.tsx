@@ -11,29 +11,34 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 export const createChannel = async function (
-  channelName: string,
-  channelDescription: string
+  channelName: string | [string, string],
+  channelDescription: string,
+  id: string = `${nanoid()}${Date.now()}`,
+  isPrivate?: boolean,
+  channelMembers?: any[]
 ) {
   try {
-    const id = `${nanoid()}${Date.now()}`
     const response = await setDoc(doc(database, 'channels', id), {
       channelName,
       channelDescription,
       id,
-      members: [
-        {
-          id: auth.currentUser!.uid,
-          photoURL: auth.currentUser!.photoURL,
-          name: auth.currentUser!.displayName,
-          email: auth.currentUser!.email,
-        },
-        {
-          id: 'openai',
-          photoURL: 'openai',
-          name: 'OpenAI',
-          email: null,
-        },
-      ],
+      isPrivate,
+      members: isPrivate
+        ? channelMembers
+        : [
+            {
+              id: auth.currentUser!.uid,
+              photoURL: auth.currentUser!.photoURL,
+              name: auth.currentUser!.displayName,
+              email: auth.currentUser!.email,
+            },
+            {
+              id: 'openai',
+              photoURL: 'openai',
+              name: 'OpenAI',
+              email: null,
+            },
+          ],
       messages: [],
     })
     console.log('channel created!')
@@ -44,63 +49,95 @@ export const createChannel = async function (
 
 export const sendMessage = async function (
   message: string,
-  channelId: string,
-  channelMessages: any[]
+  channelInfo: {
+    channelName: string
+    channelDesc: string
+    channelId: string
+    isPrivate?: boolean
+    channelMembers: {
+      id: string
+      photoURL: string
+      name: string
+      email: string
+    }[]
+    channelMessages: any[]
+  }
 ) {
   if (message.trim().length === 0) return
-  const channelRef = doc(database, 'channels', channelId)
+  const channelRef = doc(database, 'channels', channelInfo.channelId)
 
-  if (message.trim().toLowerCase().startsWith('@openai')) {
-    const userName =
-      auth.currentUser?.displayName ||
-      auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
-    const prompt =
-      channelMessages
-        .map(message => message.message)
-        .slice(-30)
-        .join('\n') +
-      '\n' +
-      message.trim().split(' ').slice(1).join(' ')
+  try {
+    if (message.trim().toLowerCase().startsWith('@openai')) {
+      const userName =
+        auth.currentUser?.displayName ||
+        auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
+      const prompt =
+        channelInfo.channelMessages
+          .map(message => message.message)
+          .slice(-30)
+          .join('\n') +
+        '\n' +
+        message.trim().split(' ').slice(1).join(' ')
+      await updateDoc(channelRef, {
+        messages: arrayUnion({
+          message,
+          userName,
+          userImg: auth.currentUser?.photoURL,
+          email: auth.currentUser?.email,
+          date: Date.now(),
+        }),
+      })
+      const response = await openai.createCompletion({
+        model: 'text-davinci-003',
+        prompt,
+        max_tokens: 100,
+        temperature: 0.8,
+      })
+      await updateDoc(channelRef, {
+        messages: arrayUnion({
+          message: `@${userName} ${response.data.choices[0].text}`,
+          userName: 'openai',
+          userImg: 'openai',
+          email: null,
+          date: Date.now(),
+        }),
+      })
+      return
+    }
     await updateDoc(channelRef, {
       messages: arrayUnion({
         message,
-        userName,
+        userName:
+          auth.currentUser?.displayName ||
+          auth.currentUser?.email?.slice(
+            0,
+            auth.currentUser?.email?.indexOf('@')
+          ),
         userImg: auth.currentUser?.photoURL,
         email: auth.currentUser?.email,
         date: Date.now(),
       }),
     })
-    const response = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt,
-      max_tokens: 100,
-      temperature: 0.8,
-    })
-    await updateDoc(channelRef, {
-      messages: arrayUnion({
-        message: `@${userName} ${response.data.choices[0].text}`,
-        userName: 'openai',
-        userImg: 'openai',
-        email: null,
-        date: Date.now(),
-      }),
-    })
-    return
-  }
-  await updateDoc(channelRef, {
-    messages: arrayUnion({
-      message,
-      userName:
+  } catch (err: any) {
+    if (err.code !== 'not-found') return
+    if (!channelInfo.isPrivate) return
+    createChannel(
+      [
+        channelInfo.channelName,
         auth.currentUser?.displayName ||
-        auth.currentUser?.email?.slice(
-          0,
-          auth.currentUser?.email?.indexOf('@')
-        ),
-      userImg: auth.currentUser?.photoURL,
-      email: auth.currentUser?.email,
-      date: Date.now(),
-    }),
-  })
+          auth.currentUser?.email?.slice(
+            0,
+            auth.currentUser?.email?.indexOf('@')
+          )!,
+      ],
+      'Private channel',
+      channelInfo.channelId,
+      true,
+      channelInfo.channelMembers
+    )
+    sendMessage(message, channelInfo)
+    console.dir(err)
+  }
 }
 function rot13(message: string) {
   let result = ''
