@@ -131,15 +131,6 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
   }
 
   useEffect(() => {
-    // ;(async () => {
-    //   const res = await fetch(
-    //     `https://chat-application-nu-one.vercel.app/?uid=${
-    //       auth.currentUser!.uid
-    //     }`
-    //   )
-    //   const token = await res.json()
-    //   options.token = token.token
-    // })()
     fetch(
       `https://chat-application-nu-one.vercel.app/?uid=${
         auth.currentUser!.uid
@@ -152,15 +143,13 @@ const CallInterface: React.FC<{ channelId: string }> = function ({
         joinRoomHandler()
       })
     window.addEventListener('beforeunload', leaveRoomHandler)
-    // console.log('Main:', mountObserver.current)
 
     return () => {
       window.removeEventListener('beforeunload', leaveRoomHandler)
-      // console.log('After:', mountObserver.current)
 
-      // if (mountObserver) {
-      //   leaveRoomHandler()
-      // }
+      if (mountObserver) {
+        leaveRoomHandler()
+      }
     }
   }, [])
 
