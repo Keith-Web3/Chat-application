@@ -59,7 +59,13 @@ const User: React.FC<Props> = function ({ channelInfo, channelDispatch }) {
 
   return (
     <div className="user" title={name}>
-      <img src={profileImg} alt="profile" />
+      <img
+        src={profileImg}
+        alt="profile"
+        onError={e => {
+          ;(e.target as HTMLImageElement).src = userImg
+        }}
+      />
       <p className="name">{name}</p>
       <motion.img
         className="down"
@@ -75,7 +81,7 @@ const User: React.FC<Props> = function ({ channelInfo, channelDispatch }) {
       <AnimatePresence>
         {isDropDownOpen && (
           <DropDown
-            key={nanoid()}
+            key={channelInfo.channelId}
             channelInfo={channelInfo}
             channelDispatch={channelDispatch}
           />
