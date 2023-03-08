@@ -31,3 +31,21 @@ $dark-300: #0b090c;
     @content;
   }
 }
+@mixin sideScrollBar() {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $dark-300;
+    padding-inline: $spacer;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    transition: background-color 200ms linear;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: $input-gray;
+    }
+  }
+}
