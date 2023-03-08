@@ -66,7 +66,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       return `<p>${el}</p>`
     })
     textAreaWidth.current!.style.width = messageRef.current!.clientWidth + 'px'
-    textAreaWidth.current!.innerHTML = `${text.join('')}`
+    textAreaWidth.current!.innerHTML = text.join('')
     messageRef.current!.style.height =
       textAreaWidth.current!.clientHeight + 'px'
   }
