@@ -22,7 +22,7 @@ export const createChannel = async function (
       channelName,
       channelDescription,
       id,
-      isPrivate,
+      isPrivate: !!isPrivate,
       members: isPrivate
         ? channelMembers
         : [
