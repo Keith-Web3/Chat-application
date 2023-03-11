@@ -45,6 +45,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   setIsModalOpen,
 }) {
   const navigate = useNavigate()
+  const [message, setMessage] = useState('')
+  const messageRef = useRef<HTMLTextAreaElement>(null)
+  const textAreaWidth = useRef<HTMLDivElement>(null)
+  const [allMessages, setAllMessages] = useState<
+    {
+      date: number
+      message: string
+      userImg: string
+      userName: string
+      email: string
+    }[]
+  >([{ date: 0, message: '', userImg: '', userName: '', email: '' }])
   const handleNavToggle = function () {
     setIsNavOpen((prev: boolean) => !prev)
   }
@@ -69,21 +81,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
     textAreaWidth.current!.innerHTML = text.join('')
     messageRef.current!.style.height =
       textAreaWidth.current!.clientHeight + 'px'
+    setMessage(messageRef.current!.value)
   }
-  const messageRef = useRef<HTMLTextAreaElement>(null)
-  const textAreaWidth = useRef<HTMLDivElement>(null)
-  const [allMessages, setAllMessages] = useState<
-    {
-      date: number
-      message: string
-      userImg: string
-      userName: string
-      email: string
-    }[]
-  >([{ date: 0, message: '', userImg: '', userName: '', email: '' }])
 
   useEffect(() => {
-    onSnapshot(collection(database, 'channels'), data => {
+    const unsubscribe = onSnapshot(collection(database, 'channels'), data => {
       let messages: {
         date: number
         message: string
@@ -99,6 +101,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       setAllMessages(messages)
       if (messageRef.current) messageRef.current!.value = ''
     })
+
+    return unsubscribe
   }, [channelInfo.channelId])
 
   useEffect(() => {
@@ -151,6 +155,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
                 id="message"
                 placeholder="Type a message here"
                 autoComplete="off"
+                value={message}
                 ref={messageRef}
                 onKeyDown={enterSubmit}
                 onInput={onInput}
