@@ -63,7 +63,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
   const enterSubmit: KeyboardEventHandler<HTMLTextAreaElement> = function (e) {
     if (e.key === 'Enter') {
       e.preventDefault()
-      sendMessage(messageRef.current!.value, channelInfo)
+      sendMessage(messageRef.current!.value, auth.currentUser!.uid, channelInfo)
+      setMessage('')
       textAreaWidth.current!.innerHTML = ''
       messageRef.current!.style.height =
         textAreaWidth.current!.clientHeight + 'px'
@@ -162,9 +163,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
               />
               <div className="textarea-width" ref={textAreaWidth}></div>
               <button
-                onClick={() =>
-                  sendMessage(messageRef.current!.value, channelInfo)
-                }
+                onClick={() => {
+                  sendMessage(
+                    messageRef.current!.value,
+                    auth.currentUser!.uid,
+                    channelInfo
+                  )
+                  setMessage('')
+                }}
               >
                 <img src={sendBtn} alt="send" />
               </button>

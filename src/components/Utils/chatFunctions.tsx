@@ -1,6 +1,11 @@
 import { doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore'
 import { nanoid } from 'nanoid'
-import { Configuration, OpenAIApi } from 'openai'
+import {
+  ChatCompletionRequestMessage,
+  Configuration,
+  CreateCompletionRequest,
+  OpenAIApi,
+} from 'openai'
 
 import { database } from '../Data/firebase'
 import { auth } from '../Data/firebase'
@@ -49,6 +54,7 @@ export const createChannel = async function (
 
 export const sendMessage = async function (
   message: string,
+  user: string,
   channelInfo: {
     channelName: string
     channelDesc: string
@@ -71,13 +77,20 @@ export const sendMessage = async function (
       const userName =
         auth.currentUser?.displayName ||
         auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
-      const prompt =
-        channelInfo.channelMessages
-          .map(message => message.message)
-          .slice(-30)
-          .join('\n') +
-        '\n' +
-        message.trim().split(' ').slice(1).join(' ')
+      const prompt = [
+        ...channelInfo.channelMessages.map(message => ({
+          role: message.id
+            ? message.id === 'openai'
+              ? 'assistant'
+              : 'user'
+            : message.userName === 'openai'
+            ? 'assistant'
+            : 'user',
+          content: `\n\n${message.message}`,
+        })),
+        { role: 'user', content: `\n\n${message}` },
+      ].slice(-30)
+
       await updateDoc(channelRef, {
         messages: arrayUnion({
           message,
@@ -85,21 +98,24 @@ export const sendMessage = async function (
           userImg: auth.currentUser?.photoURL,
           email: auth.currentUser?.email,
           date: Date.now(),
+          user,
         }),
       })
-      const response = await openai.createCompletion({
-        model: 'text-davinci-003',
-        prompt,
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: prompt as ChatCompletionRequestMessage[],
         max_tokens: 100,
         temperature: 0.8,
       })
+      console.log(response)
       await updateDoc(channelRef, {
         messages: arrayUnion({
-          message: `@${userName} ${response.data.choices[0].text}`,
+          message: `${response.data.choices[0].message?.content}`,
           userName: 'openai',
           userImg: 'openai',
           email: null,
           date: Date.now(),
+          user: 'openai',
         }),
       })
       return
@@ -107,6 +123,7 @@ export const sendMessage = async function (
     await updateDoc(channelRef, {
       messages: arrayUnion({
         message,
+        user,
         userName:
           auth.currentUser?.displayName ||
           auth.currentUser?.email?.slice(
@@ -135,7 +152,7 @@ export const sendMessage = async function (
       true,
       channelInfo.channelMembers
     )
-    sendMessage(message, channelInfo)
+    sendMessage(message, auth.currentUser!.uid, channelInfo)
     console.dir(err)
   }
 }
