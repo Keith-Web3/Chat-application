@@ -82,7 +82,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
     textAreaWidth.current!.innerHTML = text.join('')
     messageRef.current!.style.height =
       textAreaWidth.current!.clientHeight + 'px'
-    setMessage(messageRef.current!.value)
   }
 
   useEffect(() => {
@@ -100,6 +99,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
         }
       })
       setAllMessages(messages)
+      setMessage(messageRef.current!.value)
       if (messageRef.current) messageRef.current!.value = ''
     })
 
@@ -108,6 +108,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight + 52)
+    messageRef.current!.value = message
   }, [allMessages.length])
 
   const generalNavClose = function (e: MouseEvent<HTMLElement>) {
@@ -156,7 +157,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
                 id="message"
                 placeholder="Type a message here"
                 autoComplete="off"
-                value={message}
                 ref={messageRef}
                 onKeyDown={enterSubmit}
                 onInput={onInput}

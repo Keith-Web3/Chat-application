@@ -107,10 +107,9 @@ export const sendMessage = async function (
         max_tokens: 100,
         temperature: 0.8,
       })
-      console.log(response)
       await updateDoc(channelRef, {
         messages: arrayUnion({
-          message: `${response.data.choices[0].message?.content}`,
+          message: `@${userName} ${response.data.choices[0].message?.content}`,
           userName: 'openai',
           userImg: 'openai',
           email: null,
