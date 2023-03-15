@@ -64,7 +64,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
     if (e.key === 'Enter') {
       e.preventDefault()
       sendMessage(messageRef.current!.value, auth.currentUser!.uid, channelInfo)
-      setMessage('')
+      messageRef.current!.value = ''
       textAreaWidth.current!.innerHTML = ''
       messageRef.current!.style.height =
         textAreaWidth.current!.clientHeight + 'px'
@@ -100,7 +100,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
       })
       setAllMessages(messages)
       setMessage(messageRef.current!.value)
-      if (messageRef.current) messageRef.current!.value = ''
     })
 
     return unsubscribe
@@ -169,7 +168,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
                     auth.currentUser!.uid,
                     channelInfo
                   )
-                  setMessage('')
+                  messageRef.current!.value = ''
                 }}
               >
                 <img src={sendBtn} alt="send" />
