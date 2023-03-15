@@ -107,7 +107,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight + 52)
-    messageRef.current!.value = message
+    if (messageRef.current) {
+      messageRef.current!.value = message
+    }
   }, [allMessages.length])
 
   const generalNavClose = function (e: MouseEvent<HTMLElement>) {
