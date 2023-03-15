@@ -99,7 +99,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = function ({
         }
       })
       setAllMessages(messages)
-      setMessage(messageRef.current!.value)
+      if (messageRef.current) {
+        setMessage(messageRef.current!.value)
+      }
     })
 
     return unsubscribe
