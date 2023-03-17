@@ -78,7 +78,12 @@ export const sendMessage = async function (
         auth.currentUser?.displayName ||
         auth.currentUser?.email?.slice(0, auth.currentUser?.email?.indexOf('@'))
       const prompt = [
-        ...channelInfo.channelMessages.map(message => ({
+        {
+          role: 'system',
+          content:
+            'You are a chatbot in a chat application. Always tag every user you respond to.',
+        },
+        ...channelInfo.channelMessages.slice(-25).map(message => ({
           role: message.id
             ? message.id === 'openai'
               ? 'assistant'
@@ -88,8 +93,8 @@ export const sendMessage = async function (
             : 'user',
           content: `\n\n${message.message}`,
         })),
-        { role: 'user', content: `\n\n${message}` },
-      ].slice(-30)
+        { role: 'user', content: `\n\n${userName}: ${message}` },
+      ]
 
       await updateDoc(channelRef, {
         messages: arrayUnion({
@@ -109,7 +114,7 @@ export const sendMessage = async function (
       })
       await updateDoc(channelRef, {
         messages: arrayUnion({
-          message: `@${userName} ${response.data.choices[0].message?.content}`,
+          message: `${response.data.choices[0].message?.content}`,
           userName: 'openai',
           userImg: 'openai',
           email: null,
